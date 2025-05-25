@@ -145,41 +145,239 @@ Stall Owners: [cuisine].owner@ppumcafe.com / stall123
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Python 3.8+
-- Node.js 14+
-- npm or yarn
+- **Python 3.8+** (with pip and venv)
+- **Node.js 18+** (with npm) - Required for React 19.1.0
+- **Git** (for cloning the repository)
 
-### Quick Start
+### 🎯 Quick Start with Startup Script (Recommended)
 
-1. **Clone the repository:**
+The easiest way to get started is using our cross-platform startup script that handles everything automatically:
+
+#### 1. **Clone and Navigate:**
 ```bash
 git clone <repository-url>
 cd ppum-cafe-webapp
 ```
 
-2. **Backend Setup:**
+#### 2. **Make Script Executable (Linux/macOS):**
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python cli/quick_reinit.py  # Quick database setup with demo data
-python start_server.py  # Start the API server
+chmod +x start_app.sh
 ```
 
-3. **Frontend Setup (new terminal):**
+#### 3. **Start the Application:**
+
+**For first-time setup or fresh database:**
+```bash
+./start_app.sh --reset
+```
+
+**For normal development (preserves existing data):**
+```bash
+./start_app.sh
+```
+
+#### 4. **Access the Application:**
+Once both servers are running, you can access:
+- **🌐 Frontend**: http://localhost:3000
+- **🔧 Backend API**: http://localhost:8000
+- **📚 API Documentation**: http://localhost:8000/docs
+- **👑 Admin Panel**: http://localhost:3000/admin
+- **🏪 Stall Management**: http://localhost:3000/stall-management
+
+#### 5. **Stop the Application:**
+Press `Ctrl+C` in the terminal to gracefully stop both servers.
+
+### 🤖 What the Startup Script Does
+
+The `start_app.sh` script automatically handles:
+
+✅ **Environment Setup:**
+- Creates Python virtual environment if not exists
+- Activates virtual environment
+- Installs/updates Python dependencies
+- Installs Node.js dependencies if needed
+
+✅ **Database Management:**
+- Detects if database exists
+- Initializes database with demo data if not found
+- Resets database when `--reset` flag is used
+- Uses CLI tools for proper database setup
+
+✅ **Server Management:**
+- Starts FastAPI backend server (port 8000)
+- Starts React frontend server (port 3000)
+- Monitors both servers for successful startup
+- Provides graceful shutdown on Ctrl+C
+
+✅ **Cross-Platform Support:**
+- Works on Linux, macOS, and Windows (with Git Bash/WSL)
+- Automatically detects operating system
+- Uses appropriate commands for each platform
+
+### 🔧 Platform-Specific Instructions
+
+#### **Linux/Ubuntu:**
+```bash
+# Install prerequisites
+sudo apt update
+sudo apt install python3 python3-pip python3-venv nodejs npm git
+
+# Note: Ubuntu default nodejs might be older, install Node.js 18+ if needed:
+# curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+# sudo apt-get install -y nodejs
+
+# Run the application
+./start_app.sh --reset
+```
+
+#### **macOS:**
+```bash
+# Install prerequisites (using Homebrew)
+brew install python3 node git
+
+# Ensure Node.js 18+ is installed
+node --version  # Should be 18.0.0 or higher
+
+# Run the application
+./start_app.sh --reset
+```
+
+#### **Windows:**
+
+**Option 1: Git Bash (Recommended)**
+1. Install [Git for Windows](https://git-scm.com/download/win) (includes Git Bash)
+2. Install [Python 3.8+](https://www.python.org/downloads/) and [Node.js 18+](https://nodejs.org/)
+3. Open Git Bash and run:
+```bash
+./start_app.sh --reset
+```
+
+**Option 2: WSL (Windows Subsystem for Linux)**
+1. Install WSL2 and Ubuntu
+2. Follow Linux instructions above
+
+### 🎮 Demo Accounts
+
+After running the startup script, you can log in with these demo accounts:
+
+```
+👑 Admin Account:
+   Email: admin@ppumcafe.com
+   Password: admin123
+
+👤 Regular User:
+   Email: johndoe@email.com
+   Password: password123
+
+🏪 Stall Owner Accounts:
+   Email: [cuisine].owner@ppumcafe.com
+   Password: stall123
+   
+   Examples:
+   - malay.owner@ppumcafe.com
+   - chinese.owner@ppumcafe.com
+   - western.owner@ppumcafe.com
+   - indian.owner@ppumcafe.com
+```
+
+### 🔄 Development Workflow
+
+#### **Daily Development:**
+```bash
+# Start with existing data
+./start_app.sh
+```
+
+#### **Fresh Start/Reset:**
+```bash
+# Reset database and start fresh
+./start_app.sh --reset
+```
+
+#### **Troubleshooting:**
+```bash
+# If you encounter issues, try resetting
+./start_app.sh --reset
+
+# Or manually check prerequisites
+python3 --version  # Should be 3.8+
+node --version      # Should be 18+
+npm --version       # Should be installed
+```
+
+### 📋 Manual Setup (Alternative)
+
+If you prefer to set up manually or the startup script doesn't work on your system:
+
+<details>
+<summary>Click to expand manual setup instructions</summary>
+
+#### **Backend Setup:**
+```bash
+cd backend
+
+# Create and activate virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Initialize database with demo data
+python cli/quick_reinit.py
+
+# Start backend server
+python start_server.py
+```
+
+#### **Frontend Setup (new terminal):**
 ```bash
 cd frontend
+
+# Install dependencies
 npm install
+
+# Start frontend server
 npm start
 ```
 
-4. **Access the application:**
-- **Frontend**: `http://localhost:3000`
-- **Backend API**: `http://localhost:8000`
-- **API Documentation**: `http://localhost:8000/docs`
-- **Admin Panel**: `http://localhost:3000/admin`
-- **Stall Management**: `http://localhost:3000/stall-management`
+</details>
+
+### ⚠️ Troubleshooting Common Issues
+
+#### **"Permission denied" (Linux/macOS):**
+```bash
+chmod +x start_app.sh
+```
+
+#### **"Python not found":**
+- **Linux**: `sudo apt install python3 python3-pip`
+- **macOS**: `brew install python3`
+- **Windows**: Download from [python.org](https://www.python.org/downloads/)
+
+#### **"Node.js not found":**
+- **Linux**: `sudo apt install nodejs npm` (or use NodeSource for Node.js 18+)
+- **macOS**: `brew install node`
+- **Windows**: Download Node.js 18+ from [nodejs.org](https://nodejs.org/)
+
+#### **"Port already in use":**
+```bash
+# Kill processes on ports 3000 and 8000
+# Linux/macOS:
+lsof -ti:3000 | xargs kill -9
+lsof -ti:8000 | xargs kill -9
+
+# Windows:
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F
+```
+
+#### **Virtual environment issues:**
+```bash
+# Delete and recreate
+rm -rf backend/venv
+./start_app.sh --reset
+```
 
 ## 🛠️ CLI Tools & Database Management
 
@@ -392,8 +590,9 @@ GET  /api/search/stalls            # Search stalls
 
 ### Technology Stack:
 - **React 19.1.0** with modern hooks and context
-- **React Router 7.6.0** for navigation
+- **React Router DOM 7.6.0** for navigation
 - **Tailwind CSS 3.4.0** for styling
+- **React Scripts 5.0.1** for build tooling
 - **Custom API Service** with JWT token management
 
 ### Key Pages:
@@ -506,9 +705,12 @@ python cli/quick_reinit.py && python cli/test_api.py
 ## 🛠️ Technical Implementation
 
 ### Backend (FastAPI):
-- **JWT Authentication** with secure token handling
-- **SQLAlchemy ORM** with relationship management
-- **Pydantic Validation** for request/response schemas
+- **FastAPI 0.104.1** with modern async support
+- **SQLAlchemy 2.0.23** ORM with relationship management
+- **Pydantic 2.5.0** validation for request/response schemas
+- **Uvicorn 0.24.0** ASGI server for production
+- **JWT Authentication** with python-jose 3.3.0
+- **Password Hashing** with bcrypt 4.0.1 and passlib 1.7.4
 - **Background Tasks** with asyncio
 - **Role-based Middleware** for endpoint protection
 - **CORS Configuration** for frontend integration
