@@ -1,15 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import stallsData from '../data/stalls.json';
 
 function Cart() {
   const navigate = useNavigate();
   const { state, dispatch } = useApp();
 
   const groupedCart = state.cart.reduce((groups, item) => {
-    const stall = stallsData.find(s => s.id === item.stallId);
-    const stallName = stall ? stall.name : 'Unknown Stall';
+    // Get stall name from the item's stall relationship or use a default
+    const stallName = item.stall?.name || 'Unknown Stall';
     
     if (!groups[stallName]) {
       groups[stallName] = [];
@@ -21,7 +20,12 @@ function Cart() {
   const subtotal = state.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   const serviceFee = 1.50;
   const total = subtotal + serviceFee;
-  const totalCalories = state.cart.reduce((total, item) => total + (item.nutrition.calories * item.quantity), 0);
+  
+  // Fix nutrition calculation - use calories directly from item, not item.nutrition.calories
+  const totalCalories = state.cart.reduce((total, item) => {
+    const calories = item.calories || 0; // Use calories directly from item
+    return total + (calories * item.quantity);
+  }, 0);
 
   const handleRemoveItem = (itemId) => {
     dispatch({ type: 'REMOVE_FROM_CART', payload: itemId });
@@ -83,7 +87,9 @@ function Cart() {
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-800">{item.name}</h3>
                     <p className="text-primary-600 font-medium">RM {item.price.toFixed(2)} × {item.quantity}</p>
-                    <p className="text-xs text-gray-500">{item.nutrition.calories * item.quantity} kcal</p>
+                    {item.calories && (
+                      <p className="text-xs text-gray-500">{item.calories * item.quantity} kcal</p>
+                    )}
                   </div>
                   
                   <div className="flex items-center space-x-2">
@@ -135,9 +141,11 @@ function Cart() {
             </div>
           </div>
           
+          {totalCalories > 0 && (
           <p className="text-sm text-orange-600 mb-4">
             Nutrition Summary: {totalCalories} kcal
           </p>
+          )}
           
           <button
             onClick={() => navigate('/payment')}

@@ -1,12 +1,18 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import BottomNav from '../components/BottomNav';
+import { BottomNav } from '../components';
 
 function Profile() {
-  const { state, dispatch } = useApp();
+  const { state, dispatch, logout } = useApp();
 
   const handleLanguageChange = (language) => {
     dispatch({ type: 'SET_LANGUAGE', payload: language });
+  };
+
+  const handleLogout = async () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      await logout();
+    }
   };
 
   return (
@@ -109,6 +115,19 @@ function Profile() {
               </label>
             </div>
           </div>
+        </div>
+
+        {/* Logout Section */}
+        <div className="card">
+          <button
+            onClick={handleLogout}
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>Logout</span>
+          </button>
         </div>
       </div>
 

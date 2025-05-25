@@ -1,73 +1,138 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
+import ApiService from '../services/api';
 
 const AppContext = createContext();
 
+// Load cart from localStorage
+const loadCartFromStorage = () => {
+  try {
+    const savedCart = localStorage.getItem('ppum_cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  } catch (error) {
+    console.error('Error loading cart from localStorage:', error);
+    return [];
+  }
+};
+
+// Save cart to localStorage
+const saveCartToStorage = (cart) => {
+  try {
+    localStorage.setItem('ppum_cart', JSON.stringify(cart));
+  } catch (error) {
+    console.error('Error saving cart to localStorage:', error);
+  }
+};
+
 const initialState = {
   language: 'English',
-  cart: [],
+  cart: loadCartFromStorage(),
   orders: [],
   currentOrder: null,
-  user: {
-    name: 'John Doe',
-    email: 'johndoe@email.com'
-  }
+  user: null,
+  isAuthenticated: false,
+  stalls: [],
+  menuItems: [],
+  loading: false,
+  error: null,
+  cartAnimation: null, // For cart add animations
+  notifications: [],
+  orderTracking: null // For detailed order tracking
 };
 
 function appReducer(state, action) {
   switch (action.type) {
+    case 'SET_LOADING':
+      return { ...state, loading: action.payload };
+    
+    case 'SET_ERROR':
+      return { ...state, error: action.payload, loading: false };
+    
+    case 'SET_USER':
+      return { ...state, user: action.payload };
+    
+    case 'SET_AUTHENTICATED':
+      return { ...state, isAuthenticated: action.payload };
+    
     case 'SET_LANGUAGE':
       return { ...state, language: action.payload };
     
+    case 'SET_STALLS':
+      return { ...state, stalls: action.payload };
+    
+    case 'SET_MENU_ITEMS':
+      return { ...state, menuItems: action.payload };
+    
+    case 'SET_ORDERS':
+      return { ...state, orders: action.payload };
+    
+    case 'SET_ORDER_TRACKING':
+      return { ...state, orderTracking: action.payload };
+    
+    case 'SET_NOTIFICATIONS':
+      return { ...state, notifications: action.payload };
+    
     case 'ADD_TO_CART':
       const existingItem = state.cart.find(item => item.id === action.payload.id);
+      let newCart;
+      
       if (existingItem) {
-        return {
-          ...state,
-          cart: state.cart.map(item =>
+        newCart = state.cart.map(item =>
             item.id === action.payload.id
               ? { ...item, quantity: item.quantity + 1 }
               : item
-          )
-        };
+        );
+      } else {
+        newCart = [...state.cart, { ...action.payload, quantity: 1 }];
       }
+      
+      // Save to localStorage
+      saveCartToStorage(newCart);
+      
       return {
         ...state,
-        cart: [...state.cart, { ...action.payload, quantity: 1 }]
+        cart: newCart,
+        cartAnimation: {
+          type: 'add',
+          itemId: action.payload.id,
+          itemName: action.payload.name,
+          timestamp: Date.now()
+        }
       };
     
     case 'REMOVE_FROM_CART':
+      const cartAfterRemove = state.cart.filter(item => item.id !== action.payload);
+      saveCartToStorage(cartAfterRemove);
       return {
         ...state,
-        cart: state.cart.filter(item => item.id !== action.payload)
+        cart: cartAfterRemove
       };
     
     case 'UPDATE_CART_QUANTITY':
+      const cartAfterUpdate = state.cart.map(item =>
+        item.id === action.payload.id
+          ? { ...item, quantity: action.payload.quantity }
+          : item
+      );
+      saveCartToStorage(cartAfterUpdate);
       return {
         ...state,
-        cart: state.cart.map(item =>
-          item.id === action.payload.id
-            ? { ...item, quantity: action.payload.quantity }
-            : item
-        )
+        cart: cartAfterUpdate
       };
     
     case 'CLEAR_CART':
+      saveCartToStorage([]);
       return { ...state, cart: [] };
     
+    case 'CLEAR_CART_ANIMATION':
+      return { ...state, cartAnimation: null };
+    
     case 'ADD_ORDER':
-      const newOrder = {
-        id: `#${Math.floor(Math.random() * 10000)}`,
-        items: action.payload.items,
-        total: action.payload.total,
-        paymentMethod: action.payload.paymentMethod,
-        status: 'Accepted',
-        timestamp: new Date().toISOString(),
-        estimatedTime: new Date(Date.now() + 15 * 60000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
+      // Clear cart from localStorage when order is placed
+      saveCartToStorage([]);
       return {
         ...state,
-        orders: [newOrder, ...state.orders],
-        currentOrder: newOrder,
+        orders: [action.payload, ...state.orders],
+        currentOrder: action.payload,
         cart: []
       };
     
@@ -81,6 +146,21 @@ function appReducer(state, action) {
         )
       };
     
+    case 'LOGOUT':
+      // Clear cart from localStorage on logout
+      saveCartToStorage([]);
+      return {
+        ...initialState,
+        language: state.language, // Preserve language preference
+        cart: [] // Ensure cart is empty
+      };
+    
+    case 'RESTORE_CART':
+      return {
+        ...state,
+        cart: action.payload
+      };
+    
     default:
       return state;
   }
@@ -89,33 +169,262 @@ function appReducer(state, action) {
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
-  // Simulate order status updates
+  // Check authentication on app load
   useEffect(() => {
-    const interval = setInterval(() => {
-      state.orders.forEach(order => {
-        if (order.status === 'Accepted') {
-          setTimeout(() => {
-            dispatch({
-              type: 'UPDATE_ORDER_STATUS',
-              payload: { orderId: order.id, status: 'Preparing' }
-            });
-          }, 5000);
-        } else if (order.status === 'Preparing') {
-          setTimeout(() => {
-            dispatch({
-              type: 'UPDATE_ORDER_STATUS',
-              payload: { orderId: order.id, status: 'Ready' }
-            });
-          }, 10000);
-        }
-      });
-    }, 1000);
+    checkAuthentication();
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [state.orders]);
+  // Load initial data when authenticated
+  useEffect(() => {
+    if (state.isAuthenticated && state.user) {
+      loadInitialData();
+      // Restore cart from localStorage if it exists and current cart is empty
+      const savedCart = loadCartFromStorage();
+      if (savedCart.length > 0 && state.cart.length === 0) {
+        dispatch({ type: 'RESTORE_CART', payload: savedCart });
+      }
+    }
+  }, [state.isAuthenticated, state.user]);
+
+  // Poll for order updates and notifications
+  useEffect(() => {
+    if (state.isAuthenticated && state.user) {
+    const interval = setInterval(() => {
+        loadUserOrders();
+        loadNotifications();
+      }, 30000); // Check every 30 seconds
+
+      return () => clearInterval(interval);
+    }
+  }, [state.isAuthenticated, state.user]);
+
+  // Clear cart animation after 3 seconds
+  useEffect(() => {
+    if (state.cartAnimation) {
+      const timer = setTimeout(() => {
+        dispatch({ type: 'CLEAR_CART_ANIMATION' });
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [state.cartAnimation]);
+
+  const checkAuthentication = async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        // Update the API service token
+        ApiService.setToken(token);
+        const user = await ApiService.getCurrentUser();
+        dispatch({ type: 'SET_USER', payload: user });
+        dispatch({ type: 'SET_AUTHENTICATED', payload: true });
+      } else {
+        dispatch({ type: 'SET_AUTHENTICATED', payload: false });
+      }
+    } catch (error) {
+      // Token invalid or expired - don't clear cart, just set as unauthenticated
+      console.log('Authentication check failed:', error.message);
+      localStorage.removeItem('access_token');
+      ApiService.setToken(null);
+      dispatch({ type: 'SET_AUTHENTICATED', payload: false });
+      dispatch({ type: 'SET_USER', payload: null });
+    }
+  };
+
+  const loadInitialData = async () => {
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      
+      // Load stalls
+      const stalls = await ApiService.getStalls();
+      dispatch({ type: 'SET_STALLS', payload: stalls });
+      
+      // Load user orders
+      await loadUserOrders();
+      
+      // Load notifications
+      await loadNotifications();
+      
+    } catch (error) {
+      console.error('Error loading initial data:', error);
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  };
+
+  const loadUserOrders = async () => {
+    if (!state.user) return;
+    
+    try {
+      const orders = await ApiService.getUserOrders(state.user.id);
+      dispatch({ type: 'SET_ORDERS', payload: orders });
+    } catch (error) {
+      console.error('Error loading orders:', error);
+    }
+  };
+
+  const loadNotifications = async () => {
+    if (!state.user) return;
+    
+    try {
+      const notifications = await ApiService.getUserNotifications(state.user.id);
+      dispatch({ type: 'SET_NOTIFICATIONS', payload: notifications });
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    }
+  };
+
+  const loadMenuItems = useCallback(async (stallId, category = null) => {
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      const items = await ApiService.getMenuItems(stallId, category);
+      dispatch({ type: 'SET_MENU_ITEMS', payload: items });
+    } catch (error) {
+      console.error('Error loading menu items:', error);
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  }, []);
+
+  const updateLanguage = async (language) => {
+    if (!state.user) return;
+    
+    try {
+      await ApiService.updateUserLanguage(state.user.id, language);
+      dispatch({ type: 'SET_LANGUAGE', payload: language });
+    } catch (error) {
+      console.error('Error updating language:', error);
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+    }
+  };
+
+  const createOrder = async (paymentMethod) => {
+    if (!state.user) {
+      throw new Error('User not authenticated');
+    }
+    
+    try {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      
+      const orderData = {
+        user_id: state.user.id,
+        payment_method: paymentMethod,
+        items: state.cart.map(item => ({
+          menu_item_id: item.id,
+          quantity: item.quantity
+        }))
+      };
+      
+      const orderTracking = await ApiService.createOrder(orderData);
+      dispatch({ type: 'ADD_ORDER', payload: orderTracking.order });
+      dispatch({ type: 'SET_ORDER_TRACKING', payload: orderTracking });
+      
+      return orderTracking;
+    } catch (error) {
+      console.error('Error creating order:', error);
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+      throw error;
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  };
+
+  const getOrderTracking = async (orderId) => {
+    try {
+      const tracking = await ApiService.getOrderTracking(orderId);
+      dispatch({ type: 'SET_ORDER_TRACKING', payload: tracking });
+      return tracking;
+    } catch (error) {
+      console.error('Error getting order tracking:', error);
+      
+      // If it's an authentication error, try to refresh the authentication
+      if (error.message === 'Authentication required') {
+        console.log('Authentication required for order tracking, attempting to refresh...');
+        
+        try {
+          // Try to refresh authentication by checking if token is still valid
+          const token = localStorage.getItem('access_token');
+          if (token) {
+            // Try to get current user to verify token is still valid
+            const user = await ApiService.getCurrentUser();
+            if (user) {
+              console.log('Authentication refreshed, retrying order tracking...');
+              // Retry the original request
+              const tracking = await ApiService.getOrderTracking(orderId);
+              dispatch({ type: 'SET_ORDER_TRACKING', payload: tracking });
+              return tracking;
+            }
+          }
+        } catch (refreshError) {
+          console.error('Failed to refresh authentication:', refreshError);
+        }
+        
+        // If refresh failed, clear the token and let the auth system handle it
+        localStorage.removeItem('access_token');
+        ApiService.setToken(null);
+        dispatch({ type: 'SET_AUTHENTICATED', payload: false });
+        dispatch({ type: 'SET_USER', payload: null });
+        return null;
+      }
+      
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+      return null;
+    }
+  };
+
+  const searchStalls = async (query) => {
+    try {
+      if (!query.trim()) {
+        const stalls = await ApiService.getStalls();
+        dispatch({ type: 'SET_STALLS', payload: stalls });
+        return;
+      }
+      
+      const results = await ApiService.searchStalls(query);
+      dispatch({ type: 'SET_STALLS', payload: results });
+    } catch (error) {
+      console.error('Error searching stalls:', error);
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await ApiService.logout();
+      dispatch({ type: 'LOGOUT' });
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  const markNotificationRead = async (notificationId) => {
+    try {
+      await ApiService.markNotificationRead(notificationId);
+      // Reload notifications
+      await loadNotifications();
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  };
+
+  const contextValue = {
+    state,
+    dispatch,
+    loadMenuItems,
+    updateLanguage,
+    createOrder,
+    getOrderTracking,
+    searchStalls,
+    loadUserOrders,
+    loadNotifications,
+    logout,
+    markNotificationRead
+  };
 
   return (
-    <AppContext.Provider value={{ state, dispatch }}>
+    <AppContext.Provider value={contextValue}>
       {children}
     </AppContext.Provider>
   );

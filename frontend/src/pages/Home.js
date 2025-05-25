@@ -1,20 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import stallsData from '../data/stalls.json';
-import BottomNav from '../components/BottomNav';
+import { BottomNav } from '../components';
 
 function Home() {
   const navigate = useNavigate();
-  const { state } = useApp();
+  const { state, searchStalls } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredStalls = stallsData.filter(stall =>
-    stall.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    stall.cuisine.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSearch = async (value) => {
+    setSearchTerm(value);
+    await searchStalls(value);
+  };
 
-  const cartItemCount = state.cart.reduce((total, item) => total + item.quantity, 0);
+  if (state.loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading stalls...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (state.error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Error Loading Data</h2>
+          <p className="text-gray-600 mb-4">{state.error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="btn-primary"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -30,7 +56,7 @@ function Home() {
             type="text"
             placeholder="Search stalls or menu items..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
             className="input-field pl-10"
           />
           <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,51 +67,44 @@ function Home() {
 
       {/* Stalls Grid */}
       <div className="px-4 space-y-4">
-        {filteredStalls.map(stall => (
-          <div
-            key={stall.id}
-            onClick={() => navigate(`/stall/${stall.id}`)}
-            className="card cursor-pointer hover:shadow-lg transition-shadow"
-          >
-            <div className="flex items-center space-x-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-yellow-200 to-orange-200 rounded-lg flex items-center justify-center">
-                <span className="text-2xl">🍽️</span>
-              </div>
-              
-              <div className="flex-1">
-                <h3 className="font-semibold text-lg text-gray-800">{stall.name}</h3>
-                <p className="text-gray-600 text-sm">{stall.cuisine}</p>
-                <div className="flex items-center mt-1">
-                  <span className="text-yellow-500">⭐</span>
-                  <span className="text-sm text-gray-600 ml-1">{stall.rating}</span>
+        {state.stalls.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🏪</div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">No stalls found</h2>
+            <p className="text-gray-600">Try adjusting your search terms.</p>
+          </div>
+        ) : (
+          state.stalls.map(stall => (
+            <div
+              key={stall.id}
+              onClick={() => navigate(`/stall/${stall.id}`)}
+              className="card cursor-pointer hover:shadow-lg transition-shadow"
+            >
+              <div className="flex items-center space-x-4">
+                <div className="w-20 h-20 bg-gradient-to-br from-yellow-200 to-orange-200 rounded-lg flex items-center justify-center">
+                  <span className="text-2xl">🍽️</span>
                 </div>
-                <p className="text-xs text-orange-600 mt-1">Best Seller: {stall.bestSeller}</p>
+                
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg text-gray-800">{stall.name}</h3>
+                  <p className="text-gray-600 text-sm">{stall.cuisine_type}</p>
+                  <div className="flex items-center mt-1">
+                    <span className="text-yellow-500">⭐</span>
+                    <span className="text-sm text-gray-600 ml-1">{stall.rating}</span>
+                  </div>
+                  {stall.best_seller && (
+                    <p className="text-xs text-orange-600 mt-1">Best Seller: {stall.best_seller}</p>
+                  )}
+                </div>
+                
+                <button className="btn-primary text-sm px-4 py-2">
+                  ORDER
+                </button>
               </div>
-              
-              <button className="btn-primary text-sm px-4 py-2">
-                ORDER
-              </button>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
-
-      {/* Cart Floating Button */}
-      {cartItemCount > 0 && (
-        <button
-          onClick={() => navigate('/cart')}
-          className="fixed bottom-24 right-4 bg-primary-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg"
-        >
-          <div className="relative">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9" />
-            </svg>
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              {cartItemCount}
-            </span>
-          </div>
-        </button>
-      )}
 
       <BottomNav />
     </div>

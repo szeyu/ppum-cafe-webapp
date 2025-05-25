@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
-import stallsData from '../data/stalls.json';
 
 function Payment() {
   const navigate = useNavigate();
-  const { state, dispatch } = useApp();
+  const { state, createOrder } = useApp();
   const [paymentMethod, setPaymentMethod] = useState('Online Payment');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const groupedCart = state.cart.reduce((groups, item) => {
-    const stall = stallsData.find(s => s.id === item.stallId);
-    const stallName = stall ? stall.name : 'Unknown Stall';
+    const stallName = item.stall?.name || 'Unknown Stall';
     
     if (!groups[stallName]) {
       groups[stallName] = [];
@@ -23,25 +22,51 @@ function Payment() {
   const serviceFee = 1.50;
   const total = subtotal + serviceFee;
 
-  const handlePayment = () => {
-    // Create order
-    dispatch({
-      type: 'ADD_ORDER',
-      payload: {
-        items: state.cart,
-        total,
-        paymentMethod
-      }
-    });
+  const handlePayment = async () => {
+    if (state.cart.length === 0) {
+      alert('Your cart is empty!');
+      return;
+    }
+
+    try {
+      setIsProcessing(true);
+      
+      // Create order via API
+      const order = await createOrder(paymentMethod);
 
     // Navigate to order tracking
     navigate('/orders');
     
-    // Show notification after a delay
+      // Show notification after a delay (simulating order processing)
     setTimeout(() => {
       navigate('/notification');
     }, 15000);
+      
+    } catch (error) {
+      console.error('Payment failed:', error);
+      alert('Payment failed. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
+
+  if (state.cart.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-6">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🛒</div>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Your cart is empty</h2>
+          <p className="text-gray-600 mb-6">Add some items to proceed with payment.</p>
+          <button
+            onClick={() => navigate('/home')}
+            className="btn-primary"
+          >
+            Browse Stalls
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -71,6 +96,7 @@ function Payment() {
                 checked={paymentMethod === 'Online Payment'}
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 className="w-5 h-5 text-primary-600"
+                disabled={isProcessing}
               />
               <span className="flex-1 font-medium">Online Payment</span>
             </label>
@@ -83,6 +109,7 @@ function Payment() {
                 checked={paymentMethod === 'Cash at Counter'}
                 onChange={(e) => setPaymentMethod(e.target.value)}
                 className="w-5 h-5 text-primary-600"
+                disabled={isProcessing}
               />
               <span className="flex-1 font-medium">Cash at Counter</span>
             </label>
@@ -98,19 +125,42 @@ function Payment() {
               <h4 className="font-medium text-gray-800 mb-2">{stallName}: {items.length} item{items.length > 1 ? 's' : ''}</h4>
               {items.map(item => (
                 <div key={item.id} className="text-sm text-gray-600">
-                  {item.name} (x{item.quantity})
+                  {item.name} (x{item.quantity}) - RM {(item.price * item.quantity).toFixed(2)}
                 </div>
               ))}
             </div>
           ))}
+          
+          <div className="border-t pt-4 mt-4">
+            <div className="flex justify-between text-sm text-gray-600 mb-2">
+              <span>Subtotal</span>
+              <span>RM {subtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-sm text-gray-600 mb-2">
+              <span>Service Fee</span>
+              <span>RM {serviceFee.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between font-semibold text-lg">
+              <span>Total</span>
+              <span className="text-primary-600">RM {total.toFixed(2)}</span>
+            </div>
+          </div>
         </div>
 
         {/* Pay Button */}
         <button
           onClick={handlePayment}
-          className="btn-primary w-full text-lg py-4"
+          disabled={isProcessing}
+          className="btn-primary w-full text-lg py-4 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          PAY NOW
+          {isProcessing ? (
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+              PROCESSING...
+            </div>
+          ) : (
+            `PAY NOW - RM ${total.toFixed(2)}`
+          )}
         </button>
       </div>
     </div>
