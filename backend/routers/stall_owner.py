@@ -87,8 +87,8 @@ def update_food_tracker_by_owner(
     if not tracker:
         raise HTTPException(status_code=404, detail="Food tracker not found or not owned by your stall")
     
-    # Validate status
-    valid_statuses = ["Queued", "Preparing", "Ready", "Delivered"]
+    # Validate status - Updated to match database model
+    valid_statuses = ["Queued", "Preparing", "Ready", "Collected"]
     if status not in valid_statuses:
         raise HTTPException(
             status_code=400, 

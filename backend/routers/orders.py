@@ -57,7 +57,7 @@ def read_order(order_id: int, db: Session = Depends(get_db), current_user: model
 @router.put("/food-trackers/{tracker_id}/status")
 def update_food_tracker_status(tracker_id: int, status: str, db: Session = Depends(get_db)):
     """Update the status of a food tracker"""
-    valid_statuses = ["Queued", "Preparing", "Ready", "Delivered"]
+    valid_statuses = ["Queued", "Preparing", "Ready", "Collected"]
     if status not in valid_statuses:
         raise HTTPException(
             status_code=400, 
