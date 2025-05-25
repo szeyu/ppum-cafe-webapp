@@ -1,0 +1,38 @@
+[
+  {
+    "id": "malay-delights",
+    "name": "Malay Delights",
+    "cuisine": "Malaysian Cuisine",
+    "bestSeller": "Nasi Lemak",
+    "rating": 4.5,
+    "image": "/images/malay-delights.jpg",
+    "description": "Authentic Malaysian cuisine with traditional flavors"
+  },
+  {
+    "id": "western-corner",
+    "name": "Western Corner",
+    "cuisine": "Western Cuisine",
+    "bestSeller": "Grilled Chicken",
+    "rating": 4.3,
+    "image": "/images/western-corner.jpg",
+    "description": "Fresh Western dishes with a modern twist"
+  },
+  {
+    "id": "chinese-kitchen",
+    "name": "Chinese Kitchen",
+    "cuisine": "Chinese Cuisine",
+    "bestSeller": "Char Kway Teow",
+    "rating": 4.4,
+    "image": "/images/chinese-kitchen.jpg",
+    "description": "Traditional Chinese wok dishes and dim sum"
+  },
+  {
+    "id": "indian-spice",
+    "name": "Indian Spice",
+    "cuisine": "Indian Cuisine",
+    "bestSeller": "Chicken Biryani",
+    "rating": 4.2,
+    "image": "/images/indian-spice.jpg",
+    "description": "Aromatic Indian curries and biryanis"
+  }
+] 

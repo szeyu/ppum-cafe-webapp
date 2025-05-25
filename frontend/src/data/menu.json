@@ -1,0 +1,146 @@
+[
+  {
+    "id": "nasi-lemak",
+    "stallId": "malay-delights",
+    "name": "Nasi Lemak",
+    "description": "Fragrant coconut rice served with sambal, fried anchovies, cucumber slices, and a boiled egg. A Malaysian breakfast favourite that's perfect for any time of day.",
+    "price": 8.50,
+    "category": "Meals",
+    "isBestSeller": true,
+    "image": "/images/nasi-lemak.jpg",
+    "nutrition": {
+      "calories": 450,
+      "protein": 15,
+      "carbs": 40,
+      "fat": 18,
+      "hospitalFriendly": true,
+      "allergens": ["fish", "nuts"]
+    }
+  },
+  {
+    "id": "rendang-ayam",
+    "stallId": "malay-delights",
+    "name": "Rendang Ayam",
+    "description": "Slow-cooked chicken in coconut and spices",
+    "price": 12.00,
+    "category": "Meals",
+    "isBestSeller": false,
+    "image": "/images/rendang-ayam.jpg",
+    "nutrition": {
+      "calories": 380,
+      "protein": 25,
+      "carbs": 8,
+      "fat": 28,
+      "hospitalFriendly": true,
+      "allergens": ["nuts"]
+    }
+  },
+  {
+    "id": "teh-tarik",
+    "stallId": "malay-delights",
+    "name": "Teh Tarik",
+    "description": "Traditional pulled tea with condensed milk",
+    "price": 3.50,
+    "category": "Drinks",
+    "isBestSeller": false,
+    "image": "/images/teh-tarik.jpg",
+    "nutrition": {
+      "calories": 120,
+      "protein": 3,
+      "carbs": 18,
+      "fat": 4,
+      "hospitalFriendly": false,
+      "allergens": ["dairy"]
+    }
+  },
+  {
+    "id": "grilled-chicken",
+    "stallId": "western-corner",
+    "name": "Grilled Chicken",
+    "description": "Tender grilled chicken breast with herbs and spices, served with roasted vegetables",
+    "price": 15.00,
+    "category": "Meals",
+    "isBestSeller": true,
+    "image": "/images/grilled-chicken.jpg",
+    "nutrition": {
+      "calories": 450,
+      "protein": 35,
+      "carbs": 12,
+      "fat": 28,
+      "hospitalFriendly": true,
+      "allergens": []
+    }
+  },
+  {
+    "id": "fish-chips",
+    "stallId": "western-corner",
+    "name": "Fish & Chips",
+    "description": "Crispy battered fish with golden fries",
+    "price": 18.00,
+    "category": "Meals",
+    "isBestSeller": false,
+    "image": "/images/fish-chips.jpg",
+    "nutrition": {
+      "calories": 650,
+      "protein": 28,
+      "carbs": 45,
+      "fat": 38,
+      "hospitalFriendly": false,
+      "allergens": ["fish", "gluten"]
+    }
+  },
+  {
+    "id": "orange-juice",
+    "stallId": "western-corner",
+    "name": "Fresh Orange Juice",
+    "description": "Freshly squeezed orange juice",
+    "price": 5.00,
+    "category": "Drinks",
+    "isBestSeller": false,
+    "image": "/images/orange-juice.jpg",
+    "nutrition": {
+      "calories": 110,
+      "protein": 2,
+      "carbs": 26,
+      "fat": 0,
+      "hospitalFriendly": true,
+      "allergens": []
+    }
+  },
+  {
+    "id": "char-kway-teow",
+    "stallId": "chinese-kitchen",
+    "name": "Char Kway Teow",
+    "description": "Stir-fried flat rice noodles with prawns, Chinese sausage, and bean sprouts",
+    "price": 10.50,
+    "category": "Meals",
+    "isBestSeller": true,
+    "image": "/images/char-kway-teow.jpg",
+    "nutrition": {
+      "calories": 520,
+      "protein": 22,
+      "carbs": 58,
+      "fat": 22,
+      "hospitalFriendly": false,
+      "allergens": ["shellfish", "soy"]
+    }
+  },
+  {
+    "id": "chicken-biryani",
+    "stallId": "indian-spice",
+    "name": "Chicken Biryani",
+    "description": "Aromatic basmati rice with spiced chicken and herbs",
+    "price": 13.50,
+    "category": "Meals",
+    "isBestSeller": true,
+    "image": "/images/chicken-biryani.jpg",
+    "nutrition": {
+      "calories": 480,
+      "protein": 28,
+      "carbs": 52,
+      "fat": 18,
+      "hospitalFriendly": true,
+      "allergens": ["dairy"]
+    }
+  }
+] 
