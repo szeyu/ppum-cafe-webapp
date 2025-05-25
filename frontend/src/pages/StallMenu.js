@@ -2,7 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import ApiService from '../services/api';
-import { MenuItemCard } from '../components';
+import { 
+  MenuItemCard, 
+  PageHeader, 
+  LoadingSpinner, 
+  ErrorMessage, 
+  TabNavigation, 
+  EmptyState 
+} from '../components';
 
 function StallMenu() {
   const { stallId } = useParams();
@@ -73,48 +80,26 @@ function StallMenu() {
 
   // Show loading state during initial data fetch
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading menu...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading menu..." fullScreen />;
   }
 
   // Show error state
   if (error || !stall) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Stall Not Found</h2>
-          <p className="text-gray-600 mb-4">{error || 'The requested stall could not be found.'}</p>
-          <button 
-            onClick={() => navigate('/home')} 
-            className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg transition-colors"
-          >
-            Back to Home
-          </button>
-        </div>
-      </div>
+      <ErrorMessage
+        title="Stall Not Found"
+        message={error || 'The requested stall could not be found.'}
+        onRetry={() => navigate('/home')}
+        retryText="Back to Home"
+        fullScreen
+      />
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-primary-600 text-white p-4">
-        <div className="flex items-center space-x-4">
-          <button onClick={() => navigate(-1)} className="p-1">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold">{stall.name}</h1>
-        </div>
-      </div>
+      <PageHeader title={stall.name} />
 
       {/* Stall Info */}
       <div className="p-4 bg-white border-b">
@@ -132,42 +117,25 @@ function StallMenu() {
       </div>
 
       {/* Category Tabs */}
-      {Array.isArray(categories) && categories.length > 0 && (
-      <div className="bg-white border-b">
-        <div className="flex overflow-x-auto">
-          {categories.map(category => (
-            <button
-              key={category}
-                onClick={() => handleCategoryChange(category)}
-              className={`px-6 py-3 whitespace-nowrap font-medium ${
-                activeCategory === category
-                  ? 'text-primary-600 border-b-2 border-primary-600'
-                  : 'text-gray-500'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-      </div>
-      )}
+      <TabNavigation
+        tabs={categories}
+        activeTab={activeCategory}
+        onTabChange={handleCategoryChange}
+      />
 
       {/* Menu Items */}
       <div className="p-4 space-y-4">
         {state.loading ? (
-          <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading menu items...</p>
-          </div>
+          <LoadingSpinner message="Loading menu items..." size="medium" />
         ) : filteredItems.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">🍽️</div>
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">No items found</h2>
-            <p className="text-gray-600">This category doesn't have any items yet.</p>
-          </div>
+          <EmptyState
+            icon="🍽️"
+            title="No items found"
+            message="This category doesn't have any items yet."
+          />
         ) : (
           filteredItems.map(item => (
-          <MenuItemCard key={item.id} item={item} />
+            <MenuItemCard key={item.id} item={item} />
           ))
         )}
       </div>

@@ -1,20 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { EmptyState } from '../shared';
 
-function EmptyCart({ onBrowseStalls }) {
+function EmptyCart() {
+  const navigate = useNavigate();
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-6">
-      <div className="text-center">
-        <div className="text-6xl mb-4">🛒</div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">Your cart is empty</h2>
-        <p className="text-gray-600 mb-6">Add some delicious items from our stalls!</p>
-        <button
-          onClick={onBrowseStalls}
-          className="btn-primary"
-        >
-          Browse Stalls
-        </button>
-      </div>
-    </div>
+    <EmptyState
+      icon="🛒"
+      title="Your cart is empty"
+      message="Add some delicious items to get started!"
+      actionText="Browse Stalls"
+      onAction={() => navigate('/home')}
+    />
   );
 }
 

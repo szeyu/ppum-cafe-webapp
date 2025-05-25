@@ -1,5 +1,5 @@
 // Shared components
-export { default as BottomNav } from './shared/BottomNav';
+export { BottomNav, PageHeader, LoadingSpinner, ErrorMessage, TabNavigation, EmptyState } from './shared';
 
 // Cart components
 export { Cart, CartItem, CartSummary, CartStallGroup, EmptyCart, FloatingCartButton } from './cart';

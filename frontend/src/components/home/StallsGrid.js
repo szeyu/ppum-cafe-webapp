@@ -1,14 +1,15 @@
 import React from 'react';
 import StallCard from './StallCard';
+import { EmptyState } from '../shared';
 
 function StallsGrid({ stalls, onStallClick }) {
   if (stalls.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-6xl mb-4">🏪</div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">No stalls found</h2>
-        <p className="text-gray-600">Try adjusting your search terms.</p>
-      </div>
+      <EmptyState
+        icon="🏪"
+        title="No stalls found"
+        message="Try adjusting your search terms."
+      />
     );
   }
 
