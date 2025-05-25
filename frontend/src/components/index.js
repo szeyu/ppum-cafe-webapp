@@ -10,6 +10,9 @@ export { Home, StallCard, SearchBar, StallsGrid, LoadingState, ErrorState } from
 // Profile components
 export { Profile, UserInfo, OrderHistory, UserPreferences, LogoutSection } from './profile';
 
+// Payment components
+export { PaymentMethodSelector, OrderSummaryCard, PaymentButton, usePayment } from './payment';
+
 // Admin components
 export { AdminPanel, AdminDashboard, AdminStalls, AdminUsers, UserTable, RoleChangeModal, CreateUserModal, StallEditModal, MenuItemEditModal } from './admin';
 
