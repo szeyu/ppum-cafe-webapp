@@ -1,6 +1,6 @@
-# 🍽️ PPUM Café Scan & Order - Advanced Full Stack Implementation
+# 🍽️ PPUM Café Scan & Order System
 
-A comprehensive mobile-first web application for PPUM Hospital café ordering system with **advanced authentication**, **individual food tracking**, **multi-role system**, and **real-time notifications**.
+A comprehensive full-stack web application for PPUM Hospital café ordering system with **JWT authentication**, **individual food tracking**, **multi-role management**, and **real-time order processing**.
 
 ## 🎯 Project Overview
 
@@ -9,100 +9,131 @@ This is a **production-ready full-stack implementation** featuring:
 - ✅ **Individual Food Item Tracking** with separate status for each item
 - ✅ **Multi-Role System** (User, Stall Owner, Admin)
 - ✅ **FastAPI Backend** with SQLite database and background tasks
-- ✅ **React Frontend** with enhanced UX and animations
+- ✅ **React Frontend** with modern UX and animations
 - ✅ **Real-time Order Tracking** with dynamic preparation times
-- ✅ **Advanced Admin Panel** with comprehensive management tools
+- ✅ **Comprehensive Admin Panel** with full CRUD operations
 - ✅ **Enhanced Cart Experience** with floating cart and animations
 - ✅ **Smart Notification System** for individual food readiness
-- ✅ **Order Status Consistency** with proper state management
+- ✅ **Order Status Consistency** with automatic state management
 
 ## 🏗️ Architecture
 
 ```
 ppum-cafe-webapp/
 ├── backend/                 # FastAPI + SQLite Backend
-│   ├── main.py             # FastAPI app with 60+ endpoints
-│   ├── models.py           # Enhanced SQLAlchemy models (7 tables)
-│   ├── schemas.py          # Pydantic schemas with authentication
-│   ├── crud.py             # Advanced CRUD with role-based operations
+│   ├── main.py             # FastAPI app with background tasks
+│   ├── models.py           # SQLAlchemy models (7 tables)
+│   ├── schemas.py          # Pydantic schemas with validation
+│   ├── crud.py             # Advanced CRUD operations
 │   ├── database.py         # Database configuration
-│   ├── seed_data.py        # Multi-role seed data
-│   ├── test_api.py         # Comprehensive API testing
+│   ├── start_server.py     # Server startup script
 │   ├── requirements.txt    # Python dependencies
-│   └── ppum_cafe.db        # SQLite database with advanced schema
+│   ├── ppum_cafe.db        # SQLite database
+│   ├── cli/                # Command-line tools
+│   │   ├── __init__.py     # CLI package initialization
+│   │   ├── README.md       # Detailed CLI documentation
+│   │   ├── seed_data.py    # Multi-role seed data
+│   │   ├── reinit_database.py  # Interactive database reset
+│   │   ├── quick_reinit.py     # Non-interactive quick reset
+│   │   ├── reset_utils.py      # Selective table reset utilities
+│   │   └── test_api.py         # API endpoint testing suite
+│   └── routers/            # Modular API endpoints
+│       ├── auth.py         # Authentication endpoints
+│       ├── admin.py        # Admin management endpoints
+│       ├── stall_owner.py  # Stall owner endpoints
+│       ├── orders.py       # Order management
+│       ├── menu_items.py   # Menu item operations
+│       ├── stalls.py       # Stall management
+│       ├── users.py        # User management
+│       ├── notifications.py # Notification system
+│       └── search.py       # Search functionality
 │
-└── frontend/               # React Frontend with Authentication
+└── frontend/               # React Frontend
     ├── src/
-    │   ├── services/api.js # Enhanced API service with JWT
-    │   ├── context/        # Authentication context
-    │   ├── pages/          # All pages with auth protection
-    │   ├── components/     # Organized by page functionality
-    │   │   ├── shared/     # BottomNav, FloatingCartButton
-    │   │   ├── stall-menu/ # MenuItemCard, MenuItemDetail
-    │   │   ├── orders/     # OrderProgress, OrderTrackingDetail
-    │   │   ├── cart/       # Cart-specific components
-    │   │   ├── admin/      # Admin panel components
-    │   │   └── ...
-    │   └── ...
+    │   ├── services/api.js # API service with JWT handling
+    │   ├── context/        # React context for state management
+    │   │   └── AppContext.js # Global app state
+    │   ├── pages/          # All application pages
+    │   │   ├── Home.js     # Main stall listing
+    │   │   ├── StallMenu.js # Individual stall menus
+    │   │   ├── Cart.js     # Shopping cart
+    │   │   ├── Payment.js  # Payment processing
+    │   │   ├── Orders.js   # Order tracking
+    │   │   ├── Profile.js  # User profile
+    │   │   ├── Login.js    # Authentication
+    │   │   ├── Register.js # User registration
+    │   │   ├── Admin.js    # Admin panel
+    │   │   └── StallManagement.js # Stall owner interface
+    │   └── components/     # Organized by functionality
+    │       ├── shared/     # BottomNav, FloatingCartButton
+    │       ├── stall-menu/ # MenuItemCard, MenuItemDetail
+    │       ├── orders/     # OrderProgress, OrderTrackingDetail
+    │       ├── cart/       # Cart components
+    │       ├── admin/      # Admin panel components
+    │       ├── stall-owner/ # Stall management components
+    │       ├── auth/       # Authentication components
+    │       ├── payment/    # Payment components
+    │       ├── profile/    # Profile components
+    │       └── home/       # Home page components
     └── package.json        # Node.js dependencies
 ```
 
-## 🗄️ Enhanced Database Schema
+## 🗄️ Database Schema (7 Tables)
 
-### Tables (7 Total):
-1. **users** - Multi-role user accounts with authentication
-2. **stalls** - Food stall information with timing data
-3. **menu_items** - Enhanced menu items with prep complexity
+### Core Tables:
+1. **users** - Multi-role user accounts with JWT authentication
+2. **stalls** - Food stall information with operational data
+3. **menu_items** - Menu items with nutrition and preparation data
 4. **orders** - Orders with estimated completion times
-5. **order_items** - Individual items in orders
-6. **food_trackers** - Individual food item tracking (NEW)
-7. **notifications** - Enhanced notification system
+5. **order_items** - Individual items within orders
+6. **food_trackers** - Individual food item tracking system
+7. **notifications** - Real-time notification system
 
 ### Advanced Features:
-- **JWT Authentication** with password hashing
+- **JWT Authentication** with bcrypt password hashing
 - **Role-based Access Control** (user, stall_owner, admin)
 - **Individual Food Tracking** with separate status per item
 - **Dynamic Preparation Times** based on queue and complexity
 - **Background Tasks** for real-time status updates
-- **Enhanced Relationships** with proper foreign keys
+- **Comprehensive Relationships** with proper foreign keys
 - **Order Status Consistency** with automatic updates
 
 ## 🔐 Authentication System
 
 ### User Roles:
-- **👤 User**: Can browse, order, and track their orders
-- **🏪 Stall Owner**: Manages their stall's orders and food preparation
-- **👑 Admin**: Full system access and user management
+- **👤 User**: Browse stalls, place orders, track food items
+- **🏪 Stall Owner**: Manage their stall's orders and food preparation
+- **👑 Admin**: Full system access and comprehensive management
 
 ### Authentication Features:
-- **JWT Token-based** authentication
+- **JWT Token-based** authentication with secure headers
 - **Secure Password Hashing** with bcrypt
 - **Protected Routes** with role verification
-- **Token Management** in API service
-- **Auto-login** and session persistence
+- **Token Management** in API service with automatic refresh
+- **Session Persistence** with localStorage
 
 ### Demo Accounts:
 ```
-Admin: ppumcafe1@email.com / admin123
+Admin: admin@ppumcafe.com / admin123
 User: johndoe@email.com / password123
-Stall Owners: [stall].owner@ppumcafe.com / stall123
+Stall Owners: [cuisine].owner@ppumcafe.com / stall123
 ```
 
 ## 🍽️ Individual Food Tracking System
 
 ### Advanced Order Tracking:
-- **Individual Item Status** for each food item
-- **Dynamic Preparation Times** based on complexity and queue
+- **Individual Item Status** for each food item in an order
+- **Dynamic Preparation Times** based on complexity and current queue
 - **Real-time Background Updates** every 30 seconds
-- **Smart Notifications** only when specific items are ready
-- **Queue Position Tracking** for accurate timing
+- **Smart Notifications** triggered only when specific items are ready
+- **Queue Position Tracking** for accurate timing estimates
 - **Order Status Consistency** with automatic state management
 
 ### Food Tracker Statuses:
 1. **Queued** - Item waiting to be prepared
 2. **Preparing** - Currently being cooked
-3. **Ready** - Ready for pickup
-4. **Collected** - Customer has collected
+3. **Ready** - Ready for customer pickup
+4. **Collected** - Customer has collected the item
 
 ### Order Status Progression:
 - **"Accepted"** - Order placed, all items queued
@@ -111,37 +142,6 @@ Stall Owners: [stall].owner@ppumcafe.com / stall123
 - **"Ready for Pickup"** - All items ready for collection
 - **"Completed"** - All items collected by customer
 
-### Enhanced Features:
-- **Complexity Multipliers** for different food types
-- **Queue Management** with position tracking
-- **Estimated vs Actual** ready times
-- **Stall-specific** preparation workflows
-- **Automatic Status Updates** when items change state
-
-## 🔄 Order Status Consistency System
-
-### Smart Status Management:
-- **Automatic Order Status Updates** based on individual food tracker states
-- **Real-time Synchronization** between food items and overall order
-- **Proper State Transitions** with validation
-- **Consistency Checks** to prevent status mismatches
-
-### Status Update Logic:
-```
-Food Tracker Status → Order Status
-All Queued → "Accepted"
-Some Preparing → "Preparing"
-Some Ready + Some Preparing → "Partially Ready"
-All Ready → "Ready for Pickup"
-All Collected → "Completed"
-```
-
-### Recent Improvements:
-- ✅ **Fixed Order Status Consistency** - Orders now properly update when food items are collected
-- ✅ **Enhanced Status Transitions** - Smooth progression from Preparing → Ready → Collected
-- ✅ **Automatic State Management** - No manual intervention needed for status updates
-- ✅ **Real-time Synchronization** - Immediate updates when stall owners mark items as collected
-
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -149,11 +149,11 @@ All Collected → "Completed"
 - Node.js 14+
 - npm or yarn
 
-### Quick Start (Both Services)
+### Quick Start
 
-1. **Clone and setup:**
+1. **Clone the repository:**
 ```bash
-git clone <repository>
+git clone <repository-url>
 cd ppum-cafe-webapp
 ```
 
@@ -163,8 +163,8 @@ cd backend
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
-python seed_data.py
-python main.py
+python cli/quick_reinit.py  # Quick database setup with demo data
+python start_server.py  # Start the API server
 ```
 
 3. **Frontend Setup (new terminal):**
@@ -175,154 +175,275 @@ npm start
 ```
 
 4. **Access the application:**
-- Frontend: `http://localhost:3000`
-- Backend API: `http://localhost:8000`
-- API Docs: `http://localhost:8000/docs`
-- Admin Panel: `http://localhost:3000/admin`
-- Stall Management: `http://localhost:3000/stall-management`
+- **Frontend**: `http://localhost:3000`
+- **Backend API**: `http://localhost:8000`
+- **API Documentation**: `http://localhost:8000/docs`
+- **Admin Panel**: `http://localhost:3000/admin`
+- **Stall Management**: `http://localhost:3000/stall-management`
 
-## 📡 Enhanced API Endpoints (60+ Total)
+## 🛠️ CLI Tools & Database Management
+
+The project includes a comprehensive set of command-line tools for database management and API testing, organized in the `backend/cli/` directory.
+
+### 📁 Available CLI Tools:
+
+#### 1. **Interactive Database Reset** (`reinit_database.py`)
+Complete database reinitialization with safety features:
+```bash
+cd backend
+python cli/reinit_database.py
+```
+- ✅ Interactive prompts for safety confirmation
+- ✅ Automatic backup creation with timestamps  
+- ✅ Two reset methods: clear data OR recreate tables
+- ✅ Comprehensive error handling with rollback
+- 🎯 **Best for**: Production-like environments, team setups
+
+#### 2. **Quick Database Reset** (`quick_reinit.py`)
+Fast database reset for development workflows:
+```bash
+cd backend
+python cli/quick_reinit.py
+```
+- ⚡ No user prompts - runs immediately
+- ⚡ Automatic backup if database exists
+- ⚡ Uses fastest reset method (clear data)
+- 🎯 **Best for**: Development, CI/CD pipelines, rapid prototyping
+
+#### 3. **Selective Reset Utilities** (`reset_utils.py`)
+Surgical database operations for specific tables:
+```bash
+cd backend
+python cli/reset_utils.py
+```
+- 🎯 Reset individual table groups (orders, users, menu items)
+- 📊 View database statistics
+- 🌱 Reseed specific data only
+- 📋 Interactive menu system
+- 🎯 **Best for**: Development debugging, testing specific features
+
+#### 4. **API Testing Suite** (`test_api.py`)
+Comprehensive testing of all API endpoints:
+```bash
+cd backend
+python cli/test_api.py  # Ensure backend server is running first
+```
+- 🧪 Tests all 40+ API endpoints
+- 🔐 JWT authentication flow testing
+- 👥 Role-based access control verification
+- 📋 Order creation and tracking tests
+- 🎯 **Best for**: API development verification, regression testing
+
+#### 5. **Database Seeding** (`seed_data.py`)
+Standalone database seeding with demo data:
+```bash
+cd backend
+python cli/seed_data.py
+```
+- 🌱 Creates demo accounts and sample data
+- 🏪 Populates 4 stalls with 10+ menu items
+- ⚡ Fast seeding without full database reset
+- 🎯 **Best for**: Fresh setup, demo environment creation
+
+### 🔄 CLI Tool Comparison:
+
+| Tool | Purpose | User Interaction | Backup | Speed | Best For |
+|------|---------|------------------|--------|-------|----------|
+| `reinit_database.py` | Full reset with safety | Interactive prompts | Yes | Moderate | Production, Teams |
+| `quick_reinit.py` | Fast development reset | None | Auto | Fast | Development, CI/CD |
+| `reset_utils.py` | Selective operations | Menu-driven | Optional | Variable | Debugging, Testing |
+| `test_api.py` | API verification | None | N/A | Fast | API Development |
+| `seed_data.py` | Initial data seeding | None | N/A | Fast | Fresh Setup, Demo Data |
+
+### 📊 Database Operations Supported:
+
+**Full Reset** (reinit_database.py, quick_reinit.py):
+- ✅ All 7 tables: users, stalls, menu_items, orders, order_items, food_trackers, notifications
+- ✅ Complete reseeding with demo data
+- ✅ Demo accounts recreation
+
+**Selective Reset** (reset_utils.py):
+- 🎯 **Reset Orders Only**: Clear orders, order_items, food_trackers, notifications
+- 🎯 **Reset Menu Items Only**: Clear menu_items (preserves users and stalls)  
+- 🎯 **Reset Users Only**: Clear users and dependent data (preserves stalls/menu)
+- 🎯 **Reseed Users Only**: Add fresh demo accounts to existing database
+- 📊 **View Statistics**: Show record counts for all tables
+
+### 🎉 Demo Accounts (Created by all reset tools):
+```
+👑 Admin: admin@ppumcafe.com / admin123
+👤 User: johndoe@email.com / password123
+🏪 Stall Owners: [cuisine].owner@ppumcafe.com / stall123
+```
+
+### 💡 Development Workflow Examples:
+
+**Daily Development**:
+```bash
+python cli/quick_reinit.py  # Quick reset
+python cli/test_api.py      # Verify APIs work
+```
+
+**Fresh Database Setup**:
+```bash
+python cli/seed_data.py     # Just add demo data (if empty DB)
+# OR
+python cli/quick_reinit.py  # Full reset + seed data
+```
+
+**Feature Testing**:
+```bash
+python cli/reset_utils.py   # Reset specific tables
+# Choose option 2: Reset orders only
+```
+
+**Production Setup**:
+```bash
+python cli/reinit_database.py  # Interactive with backup
+```
+
+**Debugging**:
+```bash
+python cli/reset_utils.py   # View statistics first
+# Choose option 1: View database statistics
+```
+
+> 📖 **Detailed Documentation**: See `backend/cli/README.md` for comprehensive usage guides, troubleshooting, and advanced features.
+
+## 📡 API Endpoints (40+ Total)
 
 ### Authentication Endpoints:
 ```
-POST /api/auth/register     # User registration
-POST /api/auth/login        # User login with JWT
-GET  /api/auth/me          # Get current user info
+POST /api/auth/register     # User registration with validation
+POST /api/auth/login        # User login with JWT token
+GET  /api/auth/me          # Get current authenticated user
 ```
 
 ### User Management:
 ```
+POST /api/users/           # Create new user
 GET  /api/users/{id}       # Get user profile
 PUT  /api/users/{id}/language  # Update language preference
 ```
 
-### Enhanced Order System:
+### Stall Management:
 ```
-POST /api/orders/                    # Create order with tracking
-GET  /api/orders/user/{user_id}      # Get user orders
-GET  /api/orders/{id}/tracking       # Get detailed tracking info
-```
-
-### Food Tracking:
-```
-GET  /api/food-trackers/{id}         # Get tracker details
-PUT  /api/food-trackers/{id}/status  # Update tracker status
+GET  /api/stalls/          # Get all active stalls
+GET  /api/stalls/{id}      # Get specific stall details
+POST /api/stalls/          # Create new stall (admin only)
+PUT  /api/stalls/{id}      # Update stall (admin only)
+DELETE /api/stalls/{id}    # Delete stall (admin only)
+GET  /api/stalls/{id}/categories  # Get menu categories for stall
 ```
 
-### Admin Endpoints (20+ endpoints):
+### Menu Item Management:
 ```
-GET  /api/admin/stats               # Dashboard statistics
-GET  /api/admin/users               # All users management
-POST /api/admin/users               # Create admin/stall owner
-GET  /api/admin/users/by-role/{role} # Users by role
-PUT  /api/admin/users/change-role   # Change user role
-DELETE /api/admin/users/{id}        # Delete user
-GET  /api/admin/stalls              # Stall management
-POST /api/admin/stalls              # Create stall
-PUT  /api/admin/stalls/{id}         # Update stall
-DELETE /api/admin/stalls/{id}       # Delete stall
-GET  /api/admin/menu-items          # Menu item management
-POST /api/admin/menu-items          # Create menu item
-PUT  /api/admin/menu-items/{id}     # Update menu item
-DELETE /api/admin/menu-items/{id}   # Delete menu item
+GET  /api/menu-items/      # Get menu items with filtering
+GET  /api/menu-items/{id}  # Get specific menu item
+POST /api/menu-items/      # Create menu item (admin only)
+PUT  /api/menu-items/{id}  # Update menu item (admin only)
+DELETE /api/menu-items/{id} # Delete menu item (admin only)
 ```
 
-### Stall Owner Endpoints (10+ endpoints):
+### Order System:
 ```
-GET  /api/stall-owner/orders        # Stall's orders
-GET  /api/stall-owner/food-trackers # Stall's food trackers
-PUT  /api/stall-owner/food-trackers/{id}/status # Update food status
-GET  /api/stall-owner/stall         # Stall information
-GET  /api/stall-owner/menu-items    # Stall's menu items
-POST /api/stall-owner/menu-items    # Create menu item
-PUT  /api/stall-owner/menu-items/{id} # Update menu item
-DELETE /api/stall-owner/menu-items/{id} # Delete menu item
+POST /api/orders/          # Create order with tracking
+GET  /api/orders/user/{id} # Get user's orders
+GET  /api/orders/{id}      # Get specific order
+GET  /api/orders/{id}/tracking  # Get detailed tracking info
+PUT  /api/orders/food-trackers/{id}/status  # Update food status
 ```
 
-## 🎨 Enhanced Frontend Features
+### Admin Endpoints (15+ endpoints):
+```
+GET  /api/admin/stats      # Dashboard statistics
+GET  /api/admin/users      # All users management
+POST /api/admin/users      # Create admin/stall owner accounts
+GET  /api/admin/users/by-role/{role}  # Users by role
+PUT  /api/admin/users/change-role     # Change user roles
+DELETE /api/admin/users/{id}          # Delete users
+GET  /api/admin/stalls     # Stall management
+GET  /api/admin/menu-items # Menu item management
+GET  /api/admin/orders     # Order management
+DELETE /api/admin/orders/{id}  # Delete orders
+```
 
-### Authentication Pages:
-- **Login Page** with form validation and error handling
-- **Register Page** with password confirmation
-- **Protected Routes** with authentication guards
-- **Auto-redirect** for unauthorized access
+### Stall Owner Endpoints (8+ endpoints):
+```
+GET  /api/stall-owner/orders        # View stall's orders
+GET  /api/stall-owner/food-trackers # View food trackers
+PUT  /api/stall-owner/food-trackers/{id}/status  # Update food status
+GET  /api/stall-owner/stall         # Get stall information
+GET  /api/stall-owner/menu-items    # Manage menu items
+POST /api/stall-owner/menu-items    # Create menu items
+PUT  /api/stall-owner/menu-items/{id}   # Update menu items
+DELETE /api/stall-owner/menu-items/{id} # Delete menu items
+```
 
-### Enhanced Cart Experience:
+### Notification & Search:
+```
+GET  /api/notifications/user/{id}   # Get user notifications
+PUT  /api/notifications/{id}/read   # Mark notification as read
+GET  /api/search/menu-items        # Search menu items
+GET  /api/search/stalls            # Search stalls
+```
+
+## 🎨 Frontend Features
+
+### Technology Stack:
+- **React 19.1.0** with modern hooks and context
+- **React Router 7.6.0** for navigation
+- **Tailwind CSS 3.4.0** for styling
+- **Custom API Service** with JWT token management
+
+### Key Pages:
+- **Home** - Stall listing with search functionality
+- **StallMenu** - Individual stall menus with category filtering
+- **Cart** - Shopping cart with multi-stall support
+- **Payment** - Payment processing with order creation
+- **Orders** - Real-time order tracking with individual food status
+- **Profile** - User profile management
+- **Admin** - Comprehensive admin panel
+- **StallManagement** - Stall owner interface
+
+### Enhanced UX Features:
 - **Floating Cart Button** with smooth animations
 - **Add-to-Cart Animations** with visual feedback
-- **Smart Visibility** (hidden on cart/payment pages)
-- **Multi-stall Management** with stall grouping
-
-### Advanced Order Tracking:
-- **Individual Food Status** for each item
 - **Real-time Updates** with background polling
-- **Progress Indicators** for each food item
-- **Estimated Times** with dynamic calculations
-- **Receipt Display** with order ID and details
-- **Consistent Status Display** with automatic updates
+- **Protected Routes** with authentication guards
+- **Responsive Design** optimized for mobile
+- **Error Handling** with graceful degradation
 
-### Component Organization:
-```
-components/
-├── shared/          # BottomNav, FloatingCartButton
-├── stall-menu/      # MenuItemCard, MenuItemDetail
-├── orders/          # OrderProgress, OrderTrackingDetail
-├── cart/            # Cart-specific components
-├── payment/         # Payment components
-├── profile/         # Profile components
-├── admin/           # Admin panel components
-└── home/            # Home page components
-```
+## 🔧 Admin Panel Features
 
-## 🔧 Multi-Role Admin System
+### Comprehensive Management System:
+- **📊 Dashboard**: Real-time statistics and system overview
+- **🏪 Stall Management**: Complete CRUD operations for stalls
+- **🍽️ Menu Management**: Full menu item control with nutrition data
+- **📋 Order Management**: View and manage all system orders
+- **👥 User Management**: Multi-role user account management
 
 ### Admin Capabilities:
-- **👥 User Management**: Create admin and stall owner accounts
-- **🏪 Stall Management**: Full CRUD operations
-- **🍽️ Menu Management**: Complete menu item control
-- **📋 Order Management**: View and manage all orders
-- **📊 Dashboard**: Real-time statistics and insights
-- **🔄 Role Management**: Change user roles and permissions
+- **Create Admin/Stall Owner Accounts** with role assignment
+- **Manage Stall Information** including cuisine types and ratings
+- **Control Menu Items** with pricing, categories, and availability
+- **Monitor Order Activity** with detailed customer information
+- **Change User Roles** and manage permissions
+- **System Statistics** with real-time data
 
-### Stall Owner Features:
-- **📋 Order Management**: View orders for their stall only
-- **🍽️ Food Tracking**: Mark items as ready/collected
-- **⏰ Time Management**: Handle preparation timing
-- **📊 Stall Analytics**: View stall-specific data
-- **🍽️ Menu Management**: Manage their own menu items
-- **✅ Status Updates**: Update food tracker statuses with automatic order sync
+## 🏪 Stall Management System
 
-### Admin User Creation:
-- **Password Confirmation** required
-- **Role Validation** (admin/stall_owner only)
-- **Stall Assignment** for stall owners
-- **Duplicate Prevention** for stall ownership
+### Stall Owner Interface:
+- **📋 Order Management**: View orders containing their stall's items
+- **🍽️ Food Tracking**: Manage individual food item preparation
+- **⏱️ Status Updates**: Mark items through preparation stages
+- **📊 Real-time Dashboard**: Live view of all food items in preparation
+- **🍽️ Menu Management**: Create, edit, and manage their menu items
 
-## 🧪 Comprehensive Testing
-
-### API Testing:
-```bash
-cd backend
-python test_api.py
-```
-
-Tests include:
-- ✅ Authentication flow (register/login)
-- ✅ Protected endpoint access
-- ✅ Role-based authorization
-- ✅ Order creation with tracking
-- ✅ Food tracker updates
-- ✅ Admin operations
-- ✅ Stall owner operations
-- ✅ Order status consistency
-
-### Frontend Testing:
-- **Authentication Flow**: Login/logout functionality
-- **Protected Routes**: Unauthorized access handling
-- **Cart Management**: Add/remove items
-- **Order Tracking**: Real-time updates
-- **Admin Panel**: CRUD operations
-- **Status Consistency**: Order status updates
+### Status Update Flow:
+1. **Queued** → **Preparing** (Start cooking)
+2. **Preparing** → **Ready** (Food ready for pickup)
+3. **Ready** → **Collected** (Customer collected)
 
 ## 🔄 Real-Time Background Tasks
 
@@ -339,148 +460,72 @@ Tests include:
 - **Queue Position Delays** (2 minutes per position)
 - **Dynamic Ready Times** based on current load
 
-## 🔔 Enhanced Notification System
+## 🔔 Notification System
 
 ### Notification Types:
 - **Order Confirmation** when order is placed
 - **Food Ready** when individual items are ready
 - **Item Collected** when items are marked as collected
 - **Order Complete** when all items are ready
-- **Status Updates** for preparation progress
 
-### Smart Features:
+### Features:
 - **Individual Item Notifications** (not just order-level)
-- **Timing-based Alerts** only when food is actually ready
 - **Rich Notifications** with food names and order details
 - **Read/Unread Status** tracking
+- **Real-time Updates** without page refresh
 
-## 🛠️ Technical Enhancements
+## 🧪 Testing
 
-### Backend Improvements:
-- **Background Task System** with asyncio
-- **Enhanced Error Handling** with proper HTTP codes
+### API Testing:
+```bash
+cd backend
+python cli/test_api.py
+```
+
+### Test Coverage:
+- ✅ Authentication flow (register/login)
+- ✅ Protected endpoint access
+- ✅ Role-based authorization
+- ✅ Order creation with tracking
+- ✅ Food tracker updates
+- ✅ Admin operations
+- ✅ Stall owner operations
+
+### Database Testing & Management:
+```bash
+# Quick database reset for testing
+python cli/quick_reinit.py
+
+# Test specific features with selective reset
+python cli/reset_utils.py
+
+# Full test workflow
+python cli/quick_reinit.py && python cli/test_api.py
+```
+
+## 🛠️ Technical Implementation
+
+### Backend (FastAPI):
+- **JWT Authentication** with secure token handling
+- **SQLAlchemy ORM** with relationship management
+- **Pydantic Validation** for request/response schemas
+- **Background Tasks** with asyncio
 - **Role-based Middleware** for endpoint protection
-- **Advanced CRUD Operations** with relationship loading
-- **Transaction Management** for data consistency
-- **Order Status Consistency** with automatic updates
+- **CORS Configuration** for frontend integration
 
-### Frontend Improvements:
-- **Enhanced API Service** with token management
-- **Authentication Context** with persistent state
-- **Protected Route Components** with role checking
-- **Optimized Re-renders** with proper dependency arrays
-- **Error Boundary Handling** for graceful failures
+### Frontend (React):
+- **Context API** for global state management
+- **Protected Routes** with authentication guards
+- **API Service** with token management
+- **Component Organization** by functionality
+- **Responsive Design** with Tailwind CSS
+- **Error Boundaries** for graceful error handling
 
-### Database Optimizations:
-- **Proper Indexing** on frequently queried fields
-- **Relationship Loading** with joinedload for performance
-- **Cascade Deletes** for data integrity
+### Database Design:
+- **Normalized Schema** with proper relationships
+- **Indexing** on frequently queried fields
+- **Cascade Operations** for data integrity
 - **Timestamp Tracking** for audit trails
-
-## 🎯 Advanced Proof of Implementation
-
-### Authentication Verification:
-1. **JWT Token Generation** - Real tokens with expiration
-2. **Password Hashing** - Secure bcrypt implementation
-3. **Role-based Access** - Different permissions per role
-4. **Protected Routes** - Unauthorized access blocked
-
-### Individual Tracking Verification:
-1. **Separate Food Records** - Each item tracked individually
-2. **Dynamic Timing** - Preparation times vary by complexity
-3. **Queue Management** - Position-based delays
-4. **Real-time Updates** - Background task simulation
-
-### Multi-Role Verification:
-1. **Admin Functions** - User creation and management
-2. **Stall Owner Functions** - Stall-specific operations
-3. **User Functions** - Order and tracking capabilities
-4. **Role Enforcement** - Proper access control
-
-### Order Status Consistency Verification:
-1. **Automatic Updates** - Order status changes when food items are updated
-2. **State Synchronization** - Real-time sync between individual items and overall order
-3. **Proper Transitions** - Correct status progression through all states
-4. **Database Consistency** - No status mismatches between related records
-
-## 🔧 Admin Panel Features
-
-### Overview
-A comprehensive database management system accessible at `/admin` route for complete CRUD operations on all entities.
-
-### Features
-- **📊 Dashboard**: Real-time statistics and recent orders overview
-- **🏪 Stall Management**: Create, edit, delete, and manage food stalls
-- **🍽️ Menu Management**: Complete menu item CRUD with nutrition data
-- **📋 Order Management**: View and delete orders with customer details
-- **👥 User Management**: Multi-role user account management with role changes
-
-### Admin Capabilities
-
-#### Dashboard
-- **Real-time Statistics**: Total counts for stalls, menu items, orders, and users
-- **Recent Orders**: Live feed of latest orders with status and amounts
-- **System Overview**: Quick health check of the entire system
-
-#### Stall Management
-- ✅ **Create New Stalls**: Add new food stalls with complete details
-- ✅ **Edit Stall Information**: Update name, cuisine type, description, rating
-- ✅ **Toggle Active Status**: Enable/disable stalls
-- ✅ **Delete Stalls**: Remove stalls and all associated menu items
-- ✅ **Image Management**: Set stall images and branding
-
-#### Menu Item Management
-- ✅ **Add New Items**: Create menu items with full nutrition data
-- ✅ **Edit Menu Items**: Update prices, descriptions, categories
-- ✅ **Nutrition Management**: Set calories, protein, carbs, fat content
-- ✅ **Allergen Tracking**: Manage allergen information
-- ✅ **Best Seller Marking**: Highlight popular items
-- ✅ **Hospital-Friendly Flags**: Mark items suitable for patients
-- ✅ **Availability Control**: Enable/disable items
-- ✅ **Category Organization**: Organize items by Meals, Drinks, Snacks, Desserts
-
-#### User Management
-- ✅ **Multi-Role Management**: View users by role (User, Stall Owner, Admin)
-- ✅ **Role Changes**: Promote users to stall owners or admins
-- ✅ **Account Creation**: Create admin and stall owner accounts
-- ✅ **Stall Assignment**: Assign stall owners to specific stalls
-- ✅ **Account Details**: View user information and preferences
-- ✅ **Data Cleanup**: Delete users and all associated data
-
-## 🏪 Stall Management System
-
-### Overview
-A dedicated stall management interface at `/stall-management` route for stall owners to manage their operations.
-
-### Stall Owner Capabilities
-
-#### Order Management
-- **📋 View Stall Orders**: See all orders containing items from their stall
-- **👥 Customer Information**: Access customer details for each order
-- **💰 Order Totals**: View order amounts and payment methods
-- **📅 Order History**: Track orders by date and status
-
-#### Food Tracking Management
-- **🍽️ Individual Item Tracking**: See each food item being prepared
-- **⏱️ Queue Management**: View queue positions and estimated times
-- **✅ Status Updates**: Mark items as Preparing → Ready → Collected
-- **🔔 Automatic Notifications**: System sends notifications when items are marked ready
-- **📊 Real-time Dashboard**: Live view of all food items in preparation
-
-#### Menu Item Management
-- **➕ Add New Items**: Create new menu items for their stall
-- **✏️ Edit Existing Items**: Update prices, descriptions, and availability
-- **🗑️ Delete Items**: Remove items from their menu
-- **🏥 Hospital-Friendly Marking**: Flag items suitable for patients
-- **⭐ Best Seller Management**: Mark popular items
-- **🚫 Availability Control**: Enable/disable items in real-time
-
-### Status Update Flow:
-1. **Queued** → **Preparing** (Stall owner starts cooking)
-2. **Preparing** → **Ready** (Food is ready for pickup)
-3. **Ready** → **Collected** (Customer has collected the item)
-
-Each status change automatically updates the overall order status and sends appropriate notifications to customers.
 
 ## 🚀 Production Readiness
 
@@ -496,73 +541,46 @@ Each status change automatically updates the overall order status and sends appr
 - **Efficient Queries** with relationship loading
 - **Background Tasks** for non-blocking operations
 - **Optimized Frontend** with proper state management
-- **API Response Caching** where appropriate
+- **Component Memoization** to prevent unnecessary re-renders
 
 ### Scalability Considerations:
-- **Modular Architecture** with clear separation
+- **Modular Architecture** with clear separation of concerns
 - **Stateless API Design** for horizontal scaling
 - **Database Relationships** properly normalized
 - **Component Architecture** for maintainability
-- **Environment Configuration** ready
+- **Environment Configuration** ready for deployment
 
-## 📱 Enhanced Mobile Experience
+## 📱 Mobile-First Design
 
 ### UX Improvements:
+- **Touch-friendly Interface** optimized for mobile devices
 - **Smooth Animations** for cart interactions
-- **Touch-friendly** interface elements
 - **Fast Navigation** with React Router
-- **Responsive Design** for all screen sizes
 - **Progressive Loading** for better performance
+- **Offline-ready Cart** management with localStorage
 
-### Advanced Features:
-- **Floating Cart Button** with item count
-- **Add-to-Cart Animations** with visual feedback
-- **Smart Navigation** without page reloads
-- **Real-time Updates** without manual refresh
-- **Offline-ready** cart management
-
-## 🏆 Final Implementation Status
+## 🎯 Key Achievements
 
 ### Core Features (100% Complete):
-- ✅ **Authentication System** with JWT and roles
-- ✅ **Individual Food Tracking** with real-time updates
-- ✅ **Multi-Role Management** (User/Stall Owner/Admin)
-- ✅ **Enhanced Cart Experience** with animations
-- ✅ **Advanced Order Tracking** with individual items
-- ✅ **Smart Notification System** for food readiness
-- ✅ **Comprehensive Admin Panel** with full CRUD
-- ✅ **Real-time Background Tasks** for status updates
-- ✅ **Mobile-first Responsive Design** throughout
-- ✅ **Production-ready Architecture** with security
-- ✅ **Order Status Consistency** with automatic updates
-
-### Advanced Features:
-- ✅ **Dynamic Preparation Times** based on complexity
-- ✅ **Queue Management System** with position tracking
-- ✅ **Role-based API Endpoints** with proper authorization
-- ✅ **Enhanced Database Schema** with 7 related tables
-- ✅ **Component Organization** by page functionality
-- ✅ **Smooth Navigation** without authentication issues
-- ✅ **Error Handling** with graceful degradation
-- ✅ **Performance Optimization** with efficient queries
-- ✅ **Stall Management Interface** for stall owners
-- ✅ **Multi-Role User Management** with role changes
-
-### Recent Improvements:
-- ✅ **Order Status Consistency Fix** - Resolved issue where order status didn't update when food items were collected
-- ✅ **Enhanced Status Transitions** - Proper progression from Preparing → Ready for Pickup → Completed
-- ✅ **Automatic State Synchronization** - Real-time updates between food trackers and order status
-- ✅ **Improved Stall Owner Interface** - Better food tracking management with clear status updates
-- ✅ **Enhanced Admin Panel** - Multi-role user management with role change capabilities
+- ✅ **Full Authentication System** with JWT and multi-role support
+- ✅ **Individual Food Tracking** with real-time status updates
+- ✅ **Comprehensive Admin Panel** with complete CRUD operations
+- ✅ **Stall Owner Management** interface for operational control
+- ✅ **Enhanced Cart Experience** with animations and persistence
+- ✅ **Real-time Order Tracking** with individual item status
+- ✅ **Smart Notification System** for food readiness alerts
+- ✅ **Background Task System** for automated updates
+- ✅ **Mobile-first Responsive Design** throughout the application
+- ✅ **Production-ready Architecture** with security best practices
 
 ### Technical Achievements:
-- 🔐 **Secure Authentication** with industry standards
+- 🔐 **Secure Authentication** following industry standards
 - 🍽️ **Individual Food Tracking** unprecedented in café systems
 - 👥 **Multi-Role Architecture** for scalable management
 - ⚡ **Real-time Updates** with background task simulation
-- 📱 **Enhanced UX** with animations and smooth interactions
+- 📱 **Enhanced UX** with smooth animations and interactions
 - 🛡️ **Production Security** with proper authorization
-- 🎯 **Complete API Coverage** with 60+ endpoints
+- 🎯 **Complete API Coverage** with 40+ endpoints
 - 📊 **Advanced Admin Tools** for comprehensive management
 - 🔄 **Order Status Consistency** with automatic state management
 - 🏪 **Dedicated Stall Management** for operational efficiency
@@ -571,7 +589,7 @@ Each status change automatically updates the overall order status and sends appr
 
 ## 🎉 Conclusion
 
-This implementation represents a **production-ready, enterprise-level** café ordering system that goes far beyond basic requirements:
+This implementation represents a **production-ready, enterprise-level** café ordering system that demonstrates advanced full-stack development skills:
 
 - **🔐 Advanced Authentication** with JWT and multi-role support
 - **🍽️ Individual Food Tracking** with real-time status updates
@@ -581,9 +599,7 @@ This implementation represents a **production-ready, enterprise-level** café or
 - **🛡️ Production Security** with proper authorization
 - **🎯 Comprehensive Testing** with full API coverage
 - **📊 Advanced Analytics** with admin dashboard
-- 🔄 **Order Status Consistency** with automatic state management
-- 🏪 **Dedicated Stall Management** for operational efficiency
+- **🔄 Order Status Consistency** with automatic state management
+- **🏪 Dedicated Stall Management** for operational efficiency
 
-The system demonstrates **advanced full-stack development skills** and is ready for **real-world deployment** in a hospital café environment! 🚀
-
-**Total Implementation**: 7 database tables, 60+ API endpoints, 10+ pages, multi-role authentication, individual food tracking, real-time updates, comprehensive admin management, and order status consistency - **NOT HARDCODED!** ✨ 
+The system is **ready for real-world deployment** in a hospital café environment and showcases modern web development best practices! 🚀 

@@ -1,4 +1,10 @@
 import asyncio
+import os
+import sys
+
+# Add parent directory to path to import backend modules
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
 import models
@@ -21,7 +27,7 @@ def seed_database():
         # Create admin user
         admin_user_data = {
             "name": "PPUM Cafe Admin",
-            "email": "ppumcafe1@email.com",
+            "email": "admin@ppumcafe.com",
             "password": "admin123",
             "phone": "+60123456789",
             "role": "admin",
