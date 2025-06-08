@@ -170,9 +170,12 @@ function StallManagement() {
         <MenuItemModal
           item={{
             name: '',
+            name_bm: '',
             description: '',
+            description_bm: '',
             price: 0,
             category: 'Meals',
+            category_bm: '',
             is_best_seller: false,
             is_available: true,
             calories: 0,
@@ -180,7 +183,8 @@ function StallManagement() {
             carbs: 0,
             fat: 0,
             is_hospital_friendly: false,
-            allergens: []
+            allergens: [],
+            allergens_bm: []
           }}
           onSave={handleCreateMenuItemSubmit}
           onCancel={() => setShowCreateMenuModal(false)}

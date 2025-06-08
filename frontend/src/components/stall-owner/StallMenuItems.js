@@ -34,9 +34,16 @@ function StallMenuItems({
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-gray-900">
-                        {item.name}
-                      </p>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {item.name}
+                        </p>
+                        {item.name_bm && (
+                          <p className="text-xs text-gray-500">
+                            BM: {item.name_bm}
+                          </p>
+                        )}
+                      </div>
                       <div className="ml-2 flex-shrink-0 flex space-x-2">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                           item.is_available ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -59,10 +66,20 @@ function StallMenuItems({
                       <p className="text-sm text-gray-600">
                         {item.description}
                       </p>
+                      {item.description_bm && (
+                        <p className="text-xs text-gray-500">
+                          BM: {item.description_bm}
+                        </p>
+                      )}
                       <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
                         <span>RM {item.price.toFixed(2)}</span>
                         <span>•</span>
                         <span>{item.category}</span>
+                        {item.category_bm && (
+                          <>
+                            <span className="text-xs">({item.category_bm})</span>
+                          </>
+                        )}
                         {item.calories && (
                           <>
                             <span>•</span>
@@ -77,6 +94,26 @@ function StallMenuItems({
                           </span>
                         </div>
                       )}
+                      {item.allergens_bm && item.allergens_bm.length > 0 && (
+                        <div className="mt-1">
+                          <span className="text-xs text-red-600">
+                            Allergens (BM): {item.allergens_bm.join(', ')}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Translation Status */}
+                    <div className="mt-2">
+                      <span className={`text-xs px-2 py-1 rounded-full ${
+                        item.name_bm && item.description_bm
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {item.name_bm && item.description_bm
+                          ? 'Fully Translated'
+                          : 'Translation Incomplete'}
+                      </span>
                     </div>
                     
                     {/* Action Buttons */}

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import { useTranslation } from '../hooks/useTranslation';
 import { BottomNav, OrderTrackingDetail } from '../components';
 
 function Orders() {
   const navigate = useNavigate();
   const { state, loadUserOrders } = useApp();
+  const { t } = useTranslation();
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -45,6 +47,56 @@ function Orders() {
     }
   };
 
+  const getStatusText = (status) => {
+    const statusMap = {
+      'Accepted': t('orders.status.accepted') || 'Accepted',
+      'Preparing': t('orders.status.preparing') || 'Preparing',
+      'Partially Ready': t('orders.status.partiallyReady') || 'Partially Ready',
+      'Ready for Pickup': t('orders.status.readyForPickup') || 'Ready for Pickup',
+      'Completed': t('orders.status.completed') || 'Completed',
+      'Cancelled': t('orders.status.cancelled') || 'Cancelled'
+    };
+    return statusMap[status] || status;
+  };
+
+  const formatMenuItemName = (menuItem) => {
+    if (!menuItem) return t('orders.unknownItem') || 'Unknown Item';
+    
+    const englishName = menuItem.name;
+    const bmName = menuItem.name_bm;
+    
+    // If both names exist and are different, show both
+    if (bmName && bmName.trim() && bmName !== englishName) {
+      return `${englishName} / ${bmName}`;
+    }
+    
+    // Otherwise just show the English name
+    return englishName;
+  };
+
+  const formatStallName = (stall) => {
+    if (!stall) return 'Unknown Stall';
+    
+    const englishName = stall.name;
+    const bmName = stall.name_bm;
+    
+    // If both names exist and are different, show both
+    if (bmName && bmName.trim() && bmName !== englishName) {
+      return `${englishName} / ${bmName}`;
+    }
+    
+    // Otherwise just show the English name
+    return englishName;
+  };
+
+  const formatPaymentMethod = (paymentMethod) => {
+    const paymentMap = {
+      'Online Payment': t('payment.onlinePayment') || 'Online Payment',
+      'Cash at Counter': t('payment.cashAtCounter') || 'Cash at Counter'
+    };
+    return paymentMap[paymentMethod] || paymentMethod;
+  };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -57,7 +109,8 @@ function Orders() {
 
   const getOrderSummary = (order) => {
     const totalItems = order.order_items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
-    const stallNames = [...new Set(order.order_items?.map(item => item.stall?.name) || [])];
+    const uniqueStalls = [...new Set(order.order_items?.map(item => item.stall) || [])];
+    const stallNames = uniqueStalls.map(stall => formatStallName(stall));
     
     return {
       totalItems,
@@ -71,7 +124,9 @@ function Orders() {
       <div className="min-h-screen bg-gray-50 pb-20">
         <div className="bg-white shadow-sm">
           <div className="max-w-md mx-auto px-4 py-6">
-            <h1 className="text-2xl font-bold text-gray-800">My Orders</h1>
+            <h1 className="text-2xl font-bold text-gray-800">
+              {t('orders.title') || 'My Orders'}
+            </h1>
           </div>
         </div>
         
@@ -97,8 +152,12 @@ function Orders() {
       {/* Header */}
       <div className="bg-white shadow-sm">
         <div className="max-w-md mx-auto px-4 py-6">
-          <h1 className="text-2xl font-bold text-gray-800">My Orders</h1>
-          <p className="text-gray-600 mt-1">Track your food orders</p>
+          <h1 className="text-2xl font-bold text-gray-800">
+            {t('orders.title') || 'My Orders'}
+          </h1>
+          <p className="text-gray-600 mt-1">
+            {t('orders.subtitle') || 'Track your food orders'}
+          </p>
         </div>
       </div>
 
@@ -106,13 +165,17 @@ function Orders() {
         {state.orders.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">🍽️</div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">No Orders Yet</h3>
-            <p className="text-gray-600 mb-6">Start ordering from your favorite stalls!</p>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              {t('orders.noOrders.title') || 'No Orders Yet'}
+            </h3>
+            <p className="text-gray-600 mb-6">
+              {t('orders.noOrders.message') || 'Start ordering from your favorite stalls!'}
+            </p>
             <button 
               onClick={() => navigate('/home')}
               className="btn-primary"
             >
-              Browse Stalls
+              {t('orders.noOrders.browseButton') || 'Browse Stalls'}
             </button>
           </div>
         ) : (
@@ -130,12 +193,12 @@ function Orders() {
                     <div>
                       <div className="flex items-center space-x-2 mb-1">
                         <span className="font-semibold text-gray-800">
-                          Order #{order.order_number}
+                          {t('orders.orderNumber') || 'Order'} #{order.order_number}
                         </span>
                         <span className={`badge ${getStatusColor(order.status)}`}>
                           <span className="mr-1">{getStatusIcon(order.status)}</span>
-                          {order.status}
-                    </span>
+                          {getStatusText(order.status)}
+                        </span>
                       </div>
                       <p className="text-sm text-gray-600">
                         {formatDate(order.created_at)}
@@ -146,7 +209,7 @@ function Orders() {
                         RM {order.total_amount.toFixed(2)}
                       </div>
                       <div className="text-xs text-gray-500">
-                        {summary.totalItems} item{summary.totalItems !== 1 ? 's' : ''}
+                        {summary.totalItems} {t('orders.items') || 'item'}{summary.totalItems !== 1 ? 's' : ''}
                       </div>
                     </div>
                   </div>
@@ -154,8 +217,8 @@ function Orders() {
                   {/* Order Items Preview */}
                   <div className="mb-3">
                     <div className="text-sm text-gray-600 mb-2">
-                      From: {summary.stallNames.join(', ')}
-                      {summary.hasMoreStalls && ' +more'}
+                      {t('orders.from') || 'From'}: {summary.stallNames.join(', ')}
+                      {summary.hasMoreStalls && ` +${t('orders.more') || 'more'}`}
                 </div>
 
                     {order.order_items && order.order_items.length > 0 && (
@@ -163,7 +226,7 @@ function Orders() {
                         {order.order_items.slice(0, 2).map((item, index) => (
                           <div key={index} className="flex justify-between text-sm">
                             <span className="text-gray-700">
-                              {item.quantity}x {item.menu_item?.name || 'Unknown Item'}
+                              {item.quantity}x {formatMenuItemName(item.menu_item)}
                             </span>
                             <span className="text-gray-600">
                               RM {item.total_price.toFixed(2)}
@@ -172,7 +235,7 @@ function Orders() {
                         ))}
                         {order.order_items.length > 2 && (
                           <div className="text-xs text-gray-500">
-                            +{order.order_items.length - 2} more items
+                            +{order.order_items.length - 2} {t('orders.moreItems') || 'more items'}
                           </div>
                         )}
                       </div>
@@ -185,7 +248,7 @@ function Orders() {
                       <div className="flex items-center text-orange-700">
                         <span className="text-lg mr-2">🍽️</span>
                         <span className="text-sm font-medium">
-                          Some items are ready for pickup!
+                          {t('orders.messages.partiallyReady') || 'Some items are ready for pickup!'}
                         </span>
                       </div>
                     </div>
@@ -196,7 +259,7 @@ function Orders() {
                       <div className="flex items-center text-green-700">
                         <span className="text-lg mr-2">✅</span>
                         <span className="text-sm font-medium">
-                          Order ready for pickup!
+                          {t('orders.messages.completed') || 'Order ready for pickup!'}
                         </span>
                       </div>
                     </div>
@@ -204,7 +267,7 @@ function Orders() {
 
                   {order.estimated_completion_time && order.status !== 'Completed' && (
                     <div className="text-xs text-gray-500">
-                      Est. completion: {new Date(order.estimated_completion_time).toLocaleTimeString('en-US', {
+                      {t('orders.estimatedCompletion') || 'Est. completion'}: {new Date(order.estimated_completion_time).toLocaleTimeString('en-US', {
                         hour: '2-digit',
                         minute: '2-digit'
                       })}
@@ -214,10 +277,10 @@ function Orders() {
                   {/* Action indicator */}
                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
                     <span className="text-sm text-gray-600">
-                      Payment: {order.payment_method}
+                      {t('orders.payment') || 'Payment'}: {formatPaymentMethod(order.payment_method)}
                     </span>
                     <div className="flex items-center text-primary-600 text-sm">
-                      <span>Track Order</span>
+                      <span>{t('orders.trackOrder') || 'Track Order'}</span>
                       <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>

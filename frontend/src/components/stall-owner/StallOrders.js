@@ -7,6 +7,36 @@ function StallOrders({
   getStatusColor, 
   formatDate 
 }) {
+  const formatMenuItemName = (menuItem) => {
+    if (!menuItem) return 'Unknown Item';
+    
+    const englishName = menuItem.name;
+    const bmName = menuItem.name_bm;
+    
+    // If both names exist and are different, show both
+    if (bmName && bmName.trim() && bmName !== englishName) {
+      return `${englishName} / ${bmName}`;
+    }
+    
+    // Otherwise just show the English name
+    return englishName;
+  };
+
+  const formatStallName = (stall) => {
+    if (!stall) return 'Unknown Stall';
+    
+    const englishName = stall.name;
+    const bmName = stall.name_bm;
+    
+    // If both names exist and are different, show both
+    if (bmName && bmName.trim() && bmName !== englishName) {
+      return `${englishName} / ${bmName}`;
+    }
+    
+    // Otherwise just show the English name
+    return englishName;
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -57,7 +87,7 @@ function StallOrders({
                       <ul className="mt-1 text-sm text-gray-500">
                         {order.order_items?.filter(item => item.stall_id === stallInfo?.id).map((item, index) => (
                           <li key={index}>
-                            {item.quantity}x {item.menu_item?.name || 'Unknown Item'}
+                            {item.quantity}x {formatMenuItemName(item.menu_item)}
                           </li>
                         ))}
                       </ul>

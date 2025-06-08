@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useTranslation } from '../../hooks/useTranslation';
 import MenuItemDetail from './MenuItemDetail';
 
 function MenuItemCard({ item }) {
   const { dispatch, state } = useApp();
+  const { currentLanguage } = useTranslation();
   const [showDetail, setShowDetail] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Get the item name and description in the current language
+  const itemName = currentLanguage === 'BM' && item.name_bm ? item.name_bm : item.name;
+  const itemDescription = currentLanguage === 'BM' && item.description_bm ? item.description_bm : item.description;
+  const itemCategory = currentLanguage === 'BM' && item.category_bm ? item.category_bm : item.category;
+  const itemAllergens = currentLanguage === 'BM' && item.allergens_bm ? item.allergens_bm : item.allergens;
 
   // Check if this item was just added to cart
   useEffect(() => {
@@ -73,10 +81,11 @@ function MenuItemCard({ item }) {
                     Hospital-Friendly
                   </span>
                 )}
-                <h3 className="font-semibold text-gray-800">{item.name}</h3>
-                <p className="text-gray-600 text-sm mt-1 line-clamp-2">{item.description}</p>
+                <h3 className="font-semibold text-gray-800">{itemName}</h3>
+                <p className="text-gray-600 text-sm mt-1 line-clamp-2">{itemDescription}</p>
                 <div className="flex items-center mt-2 space-x-4">
                   <span className="font-bold text-primary-600">RM {item.price.toFixed(2)}</span>
+                  <span className="text-xs text-gray-500">{itemCategory}</span>
                   {item.calories && (
                     <span className="text-xs text-gray-500">{item.calories} kcal</span>
                   )}
@@ -86,9 +95,9 @@ function MenuItemCard({ item }) {
                     </span>
                   )}
                 </div>
-                {item.allergens && item.allergens.length > 0 && (
+                {itemAllergens && itemAllergens.length > 0 && (
                   <p className="text-xs text-orange-600 mt-1">
-                    Contains: {item.allergens.join(', ')}
+                    Contains: {itemAllergens.join(', ')}
                   </p>
                 )}
               </div>
@@ -111,19 +120,19 @@ function MenuItemCard({ item }) {
             }`}
           >
             {!item.is_available ? (
-              'UNAVAILABLE'
+              currentLanguage === 'BM' ? 'TIDAK TERSEDIA' : 'UNAVAILABLE'
             ) : isAdding ? (
               <div className="flex items-center justify-center">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                ADDING...
+                {currentLanguage === 'BM' ? 'MENAMBAH...' : 'ADDING...'}
               </div>
             ) : showSuccess ? (
               <div className="flex items-center justify-center">
                 <span className="mr-2">✓</span>
-                ADDED TO CART
+                {currentLanguage === 'BM' ? 'DITAMBAH KE TROLI' : 'ADDED TO CART'}
               </div>
             ) : (
-              'ADD TO CART'
+              currentLanguage === 'BM' ? 'TAMBAH KE TROLI' : 'ADD TO CART'
             )}
           </button>
           
@@ -137,8 +146,8 @@ function MenuItemCard({ item }) {
         {/* Estimated prep time */}
         {item.base_prep_time && (
           <div className="mt-2 text-xs text-gray-500 text-center">
-            Est. prep time: {Math.ceil(item.base_prep_time * item.complexity_multiplier)} min
-            {item.current_queue_count > 0 && ` (+${item.current_queue_count * 2} min queue)`}
+            {currentLanguage === 'BM' ? 'Anggaran masa penyediaan' : 'Est. prep time'}: {Math.ceil(item.base_prep_time * item.complexity_multiplier)} {currentLanguage === 'BM' ? 'minit' : 'min'}
+            {item.current_queue_count > 0 && ` (+${item.current_queue_count * 2} ${currentLanguage === 'BM' ? 'minit giliran' : 'min queue'})`}
           </div>
         )}
       </div>

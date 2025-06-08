@@ -54,32 +54,44 @@ def seed_database():
         stalls_data = [
             {
                 "name": "Malay Delights",
+                "name_bm": "Selera Melayu",
                 "cuisine_type": "Malay",
+                "cuisine_type_bm": "Melayu",
                 "description": "Authentic Malay cuisine with traditional flavors",
+                "description_bm": "Masakan Melayu asli dengan rasa tradisional",
                 "rating": 4.5,
                 "image_url": "/images/malay-stall.jpg",
                 "average_prep_time": 12
             },
             {
                 "name": "Western Corner",
+                "name_bm": "Sudut Barat",
                 "cuisine_type": "Western",
+                "cuisine_type_bm": "Barat",
                 "description": "Delicious Western dishes and comfort food",
+                "description_bm": "Hidangan Barat yang lazat dan makanan keselesaan",
                 "rating": 4.2,
                 "image_url": "/images/western-stall.jpg",
                 "average_prep_time": 15
             },
             {
                 "name": "Chinese Kitchen",
+                "name_bm": "Dapur Cina",
                 "cuisine_type": "Chinese",
+                "cuisine_type_bm": "Cina",
                 "description": "Traditional Chinese dishes with modern twists",
+                "description_bm": "Hidangan Cina tradisional dengan sentuhan moden",
                 "rating": 4.7,
                 "image_url": "/images/chinese-stall.jpg",
                 "average_prep_time": 10
             },
             {
                 "name": "Indian Spice",
+                "name_bm": "Rempah India",
                 "cuisine_type": "Indian",
+                "cuisine_type_bm": "India",
                 "description": "Aromatic Indian spices and authentic curries",
+                "description_bm": "Rempah India yang wangi dan kari yang asli",
                 "rating": 4.4,
                 "image_url": "/images/indian-stall.jpg",
                 "average_prep_time": 14
@@ -142,9 +154,12 @@ def seed_database():
             {
                 "stall_id": created_stalls[0].id,
                 "name": "Nasi Lemak",
+                "name_bm": "Nasi Lemak",
                 "description": "Fragrant coconut rice with sambal, anchovies, peanuts, and boiled egg",
+                "description_bm": "Nasi lemak yang wangi dengan sambal, ikan bilis, kacang, dan telur rebus",
                 "price": 8.50,
                 "category": "Rice Dishes",
+                "category_bm": "Hidangan Nasi",
                 "is_best_seller": True,
                 "base_prep_time": 8,
                 "complexity_multiplier": 1.2,
@@ -153,14 +168,18 @@ def seed_database():
                 "carbs": 65.0,
                 "fat": 18.0,
                 "is_hospital_friendly": False,
-                "allergens": ["Nuts", "Eggs"]
+                "allergens": ["Nuts", "Eggs"],
+                "allergens_bm": ["Kacang", "Telur"]
             },
             {
                 "stall_id": created_stalls[0].id,
                 "name": "Mee Goreng",
+                "name_bm": "Mee Goreng",
                 "description": "Spicy fried noodles with vegetables and your choice of protein",
+                "description_bm": "Mee goreng pedas dengan sayur-sayuran dan pilihan protein anda",
                 "price": 7.00,
                 "category": "Noodles",
+                "category_bm": "Mee",
                 "base_prep_time": 6,
                 "complexity_multiplier": 1.0,
                 "calories": 380,
@@ -168,16 +187,20 @@ def seed_database():
                 "carbs": 55.0,
                 "fat": 14.0,
                 "is_hospital_friendly": True,
-                "allergens": ["Gluten", "Soy"]
+                "allergens": ["Gluten", "Soy"],
+                "allergens_bm": ["Gluten", "Kacang Soya"]
             },
             
             # Western Corner
             {
                 "stall_id": created_stalls[1].id,
                 "name": "Grilled Chicken Chop",
+                "name_bm": "Chop Ayam Panggang",
                 "description": "Juicy grilled chicken breast with mashed potatoes and vegetables",
+                "description_bm": "Dada ayam panggang yang juicy dengan kentang lenyek dan sayur-sayuran",
                 "price": 12.90,
                 "category": "Main Course",
+                "category_bm": "Hidangan Utama",
                 "is_best_seller": True,
                 "base_prep_time": 15,
                 "complexity_multiplier": 1.5,
@@ -186,14 +209,18 @@ def seed_database():
                 "carbs": 25.0,
                 "fat": 22.0,
                 "is_hospital_friendly": True,
-                "allergens": ["Dairy"]
+                "allergens": ["Dairy"],
+                "allergens_bm": ["Tenusu"]
             },
             {
                 "stall_id": created_stalls[1].id,
                 "name": "Fish & Chips",
+                "name_bm": "Ikan & Kentang Goreng",
                 "description": "Crispy battered fish with golden fries and tartar sauce",
+                "description_bm": "Ikan bersalut tepung yang rangup dengan kentang goreng dan sos tartar",
                 "price": 11.50,
                 "category": "Main Course",
+                "category_bm": "Hidangan Utama",
                 "base_prep_time": 12,
                 "complexity_multiplier": 1.3,
                 "calories": 680,
@@ -201,16 +228,20 @@ def seed_database():
                 "carbs": 45.0,
                 "fat": 35.0,
                 "is_hospital_friendly": False,
-                "allergens": ["Gluten", "Fish"]
+                "allergens": ["Gluten", "Fish"],
+                "allergens_bm": ["Gluten", "Ikan"]
             },
             
             # Chinese Kitchen
             {
                 "stall_id": created_stalls[2].id,
-                "name": "Sweet & Sour Pork",
-                "description": "Tender pork pieces in tangy sweet and sour sauce with pineapple",
+                "name": "Sweet & Sour Chicken",
+                "name_bm": "Ayam Manis & Asam",
+                "description": "Tender Chicken pieces in tangy sweet and sour sauce with pineapple",
+                "description_bm": "Ayam lembut dalam saus manis dan asam dengan buah nenas",
                 "price": 9.80,
-                "category": "Pork Dishes",
+                "category": "Chicken Dishes",
+                "category_bm": "Hidangan Ayam",
                 "is_best_seller": True,
                 "base_prep_time": 10,
                 "complexity_multiplier": 1.4,
@@ -219,14 +250,18 @@ def seed_database():
                 "carbs": 35.0,
                 "fat": 18.0,
                 "is_hospital_friendly": False,
-                "allergens": ["Soy"]
+                "allergens": ["Soy"],
+                "allergens_bm": ["Kacang Soya"]
             },
             {
                 "stall_id": created_stalls[2].id,
                 "name": "Vegetable Fried Rice",
+                "name_bm": "Nasi Goreng Sayur",
                 "description": "Wok-fried rice with mixed vegetables and soy sauce",
+                "description_bm": "Nasi goreng dengan sayur-sayuran dan saus kacang",
                 "price": 6.50,
                 "category": "Rice Dishes",
+                "category_bm": "Hidangan Nasi",
                 "base_prep_time": 5,
                 "complexity_multiplier": 0.8,
                 "calories": 320,
@@ -234,16 +269,20 @@ def seed_database():
                 "carbs": 58.0,
                 "fat": 8.0,
                 "is_hospital_friendly": True,
-                "allergens": ["Soy", "Eggs"]
+                "allergens": ["Soy", "Eggs"],
+                "allergens_bm": ["Kacang Soya", "Telur"]
             },
             
             # Indian Spice
             {
                 "stall_id": created_stalls[3].id,
                 "name": "Chicken Biryani",
+                "name_bm": "Biryani Ayam",
                 "description": "Aromatic basmati rice with spiced chicken and traditional herbs",
+                "description_bm": "Nasi basmati yang wangi dengan ayam dan rempah tradisional",
                 "price": 10.90,
                 "category": "Rice Dishes",
+                "category_bm": "Hidangan Nasi",
                 "is_best_seller": True,
                 "base_prep_time": 18,
                 "complexity_multiplier": 1.6,
@@ -252,14 +291,18 @@ def seed_database():
                 "carbs": 60.0,
                 "fat": 15.0,
                 "is_hospital_friendly": True,
-                "allergens": ["Dairy"]
+                "allergens": ["Dairy"],
+                "allergens_bm": ["Tenusu"]
             },
             {
                 "stall_id": created_stalls[3].id,
                 "name": "Vegetable Curry",
+                "name_bm": "Kari Sayur",
                 "description": "Mixed vegetables in rich coconut curry sauce",
+                "description_bm": "Sayur-sayuran dalam kari kelapa yang kaya",
                 "price": 7.80,
                 "category": "Vegetarian",
+                "category_bm": "Hidangan Vegetarian",
                 "base_prep_time": 12,
                 "complexity_multiplier": 1.1,
                 "calories": 280,
@@ -267,16 +310,20 @@ def seed_database():
                 "carbs": 35.0,
                 "fat": 12.0,
                 "is_hospital_friendly": True,
-                "allergens": ["Coconut"]
+                "allergens": ["Coconut"],
+                "allergens_bm": ["Kelapa"]
             },
             
             # Additional items
             {
                 "stall_id": created_stalls[1].id,
                 "name": "Caesar Salad",
+                "name_bm": "Salad Caesar",
                 "description": "Fresh romaine lettuce with parmesan cheese and croutons",
+                "description_bm": "Salad romaine dengan keju parmesan dan croutons",
                 "price": 8.90,
                 "category": "Salads",
+                "category_bm": "Salad",
                 "base_prep_time": 3,
                 "complexity_multiplier": 0.5,
                 "calories": 180,
@@ -284,14 +331,18 @@ def seed_database():
                 "carbs": 12.0,
                 "fat": 12.0,
                 "is_hospital_friendly": True,
-                "allergens": ["Dairy", "Gluten"]
+                "allergens": ["Dairy", "Gluten"],
+                "allergens_bm": ["Tenusu", "Gluten"]
             },
             {
                 "stall_id": created_stalls[2].id,
                 "name": "Wonton Soup",
+                "name_bm": "Sup Wonton",
                 "description": "Delicate pork and shrimp wontons in clear broth",
+                "description_bm": "Wonton daging dan udang dalam kaldu jernih",
                 "price": 6.80,
                 "category": "Soups",
+                "category_bm": "Sup",
                 "base_prep_time": 7,
                 "complexity_multiplier": 1.0,
                 "calories": 220,
@@ -299,7 +350,8 @@ def seed_database():
                 "carbs": 20.0,
                 "fat": 8.0,
                 "is_hospital_friendly": True,
-                "allergens": ["Shellfish", "Gluten"]
+                "allergens": ["Shellfish", "Gluten"],
+                "allergens_bm": ["Kerang", "Gluten"]
             }
         ]
         

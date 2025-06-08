@@ -1,16 +1,35 @@
 import React from 'react';
 
-function AdminStalls({ stalls, onEditStall, onDeleteStall }) {
+function AdminStalls({ stalls, onEditStall, onDeleteStall, onAddMenuItem }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <h2 className="text-2xl font-bold text-gray-800">Manage Stalls</h2>
-        <button
-          onClick={() => onEditStall({ id: null, name: '', cuisine_type: '', description: '', rating: 0, image_url: '', is_active: true })}
-          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm font-medium w-full sm:w-auto"
-        >
-          Add New Stall
-        </button>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <button
+            onClick={onAddMenuItem}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium w-full sm:w-auto"
+          >
+            Add Menu Item
+          </button>
+          <button
+            onClick={() => onEditStall({
+              id: null,
+              name: '',
+              name_bm: '',
+              cuisine_type: '',
+              cuisine_type_bm: '',
+              description: '',
+              description_bm: '',
+              rating: 0,
+              image_url: '',
+              is_active: true
+            })}
+            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 text-sm font-medium w-full sm:w-auto"
+          >
+            Add New Stall
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -30,10 +49,19 @@ function AdminStalls({ stalls, onEditStall, onDeleteStall }) {
                 <tr key={stall.id}>
                   <td className="px-4 py-4 whitespace-nowrap">
                     <div className="font-medium text-gray-900">{stall.name}</div>
+                    {stall.name_bm && (
+                      <div className="text-xs text-gray-500">BM: {stall.name_bm}</div>
+                    )}
                     <div className="text-sm text-gray-500 max-w-xs truncate">{stall.description}</div>
+                    {stall.description_bm && (
+                      <div className="text-xs text-gray-400 max-w-xs truncate">BM: {stall.description_bm}</div>
+                    )}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                     {stall.cuisine_type}
+                    {stall.cuisine_type_bm && (
+                      <div className="text-xs text-gray-500">BM: {stall.cuisine_type_bm}</div>
+                    )}
                   </td>
                   <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
                     ⭐ {stall.rating}

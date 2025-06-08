@@ -1,18 +1,21 @@
 import React from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 
 function PaymentMethodSelector({ 
   paymentMethod, 
   onPaymentMethodChange, 
   disabled = false 
 }) {
+  const { t } = useTranslation();
+
   const paymentOptions = [
-    { value: 'Online Payment', label: 'Online Payment' },
-    { value: 'Cash at Counter', label: 'Cash at Counter' }
+    { value: 'Online Payment', label: t('payment.onlinePayment') || 'Online Payment' },
+    { value: 'Cash at Counter', label: t('payment.cashAtCounter') || 'Cash at Counter' }
   ];
 
   return (
     <div className="card">
-      <h3 className="font-semibold text-gray-800 mb-4">Payment Method</h3>
+      <h3 className="font-semibold text-gray-800 mb-4">{t('payment.paymentMethod') || 'Payment Method'}</h3>
       
       <div className="space-y-3">
         {paymentOptions.map(option => (

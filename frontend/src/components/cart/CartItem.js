@@ -5,6 +5,21 @@ function CartItem({
   onUpdateQuantity, 
   onRemoveItem 
 }) {
+  const formatMenuItemName = (menuItem) => {
+    if (!menuItem) return 'Unknown Item';
+    
+    const englishName = menuItem.name;
+    const bmName = menuItem.name_bm;
+    
+    // If both names exist and are different, show both
+    if (bmName && bmName.trim() && bmName !== englishName) {
+      return `${englishName} / ${bmName}`;
+    }
+    
+    // Otherwise just show the English name
+    return englishName;
+  };
+
   return (
     <div className="card">
       <div className="flex items-center space-x-4">
@@ -13,7 +28,7 @@ function CartItem({
         </div>
         
         <div className="flex-1">
-          <h3 className="font-semibold text-gray-800">{item.name}</h3>
+          <h3 className="font-semibold text-gray-800">{formatMenuItemName(item)}</h3>
           <p className="text-primary-600 font-medium">RM {item.price.toFixed(2)} × {item.quantity}</p>
           {item.calories && (
             <p className="text-xs text-gray-500">{item.calories * item.quantity} kcal</p>

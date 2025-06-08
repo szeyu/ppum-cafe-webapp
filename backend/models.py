@@ -27,8 +27,11 @@ class Stall(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
+    name_bm = Column(String(100), nullable=True)  # Bahasa Malaysia name
     cuisine_type = Column(String(50), nullable=False)
+    cuisine_type_bm = Column(String(50), nullable=True)  # Bahasa Malaysia cuisine type
     description = Column(Text, nullable=True)
+    description_bm = Column(Text, nullable=True)  # Bahasa Malaysia description
     rating = Column(Float, default=0.0)
     image_url = Column(String(255), nullable=True)
     is_active = Column(Boolean, default=True)
@@ -45,9 +48,12 @@ class MenuItem(Base):
     id = Column(Integer, primary_key=True, index=True)
     stall_id = Column(Integer, ForeignKey("stalls.id"), nullable=False)
     name = Column(String(100), nullable=False)
+    name_bm = Column(String(100), nullable=True)  # Bahasa Malaysia name
     description = Column(Text, nullable=True)
+    description_bm = Column(Text, nullable=True)  # Bahasa Malaysia description
     price = Column(Float, nullable=False)
     category = Column(String(50), nullable=False)
+    category_bm = Column(String(50), nullable=True)  # Bahasa Malaysia category
     is_best_seller = Column(Boolean, default=False)
     is_available = Column(Boolean, default=True)
     image_url = Column(String(255), nullable=True)
@@ -64,6 +70,7 @@ class MenuItem(Base):
     fat = Column(Float, nullable=True)
     is_hospital_friendly = Column(Boolean, default=False)
     allergens = Column(JSON, nullable=True)  # Store as JSON array
+    allergens_bm = Column(JSON, nullable=True)  # Bahasa Malaysia allergens
     
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
