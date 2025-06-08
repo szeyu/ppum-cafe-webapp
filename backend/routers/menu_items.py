@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Header
 from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 
@@ -15,6 +15,7 @@ async def get_menu_items(
     category: Optional[str] = Query(None),
     is_available: Optional[bool] = Query(None),
     is_hospital_friendly: Optional[bool] = Query(None),
+    language: Optional[str] = Header("English"),
     db: Session = Depends(get_db)
 ):
     """Get menu items with optional filtering"""
@@ -30,6 +31,25 @@ async def get_menu_items(
         query = query.filter(MenuItem.is_hospital_friendly == is_hospital_friendly)
     
     menu_items = query.all()
+    
+    # Transform menu items based on language preference
+    # NOTE: We don't transform the category field as it's needed for frontend filtering
+    if language == "BM":
+        for item in menu_items:
+            if item.name_bm:
+                item.name = item.name_bm
+            if item.description_bm:
+                item.description = item.description_bm
+            # Keep original category for filtering, BM translation is in category_bm field
+            if item.allergens_bm:
+                item.allergens = item.allergens_bm
+            if item.stall and item.stall.name_bm:
+                item.stall.name = item.stall.name_bm
+            if item.stall and item.stall.cuisine_type_bm:
+                item.stall.cuisine_type = item.stall.cuisine_type_bm
+            if item.stall and item.stall.description_bm:
+                item.stall.description = item.stall.description_bm
+    
     return menu_items
 
 @router.get("/{item_id}", response_model=MenuItemSchema)

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
+import { useTranslation } from '../../hooks/useTranslation';
 
 function FloatingCartButton() {
   const navigate = useNavigate();
   const { state } = useApp();
+  const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -60,7 +62,7 @@ function FloatingCartButton() {
             
             <div>
               <div className="font-semibold">
-                {cartItemCount} item{cartItemCount !== 1 ? 's' : ''}
+                {cartItemCount} {t('cart.items') || 'item'}{cartItemCount !== 1 ? 's' : ''}
               </div>
               <div className="text-sm opacity-90">
                 RM {cartTotal.toFixed(2)}
@@ -69,7 +71,7 @@ function FloatingCartButton() {
           </div>
           
           <div className="flex items-center space-x-2">
-            <span className="text-sm font-medium">View Cart</span>
+            <span className="text-sm font-medium">{t('cart.viewCart') || 'View Cart'}</span>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
@@ -86,7 +88,7 @@ function FloatingCartButton() {
           <div className="absolute -top-12 left-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg text-sm animate-slide-down">
             <div className="flex items-center space-x-2">
               <span>✓</span>
-              <span>{state.cartAnimation.itemName} added to cart</span>
+              <span>{state.cartAnimation.itemName} {t('cart.addedToCart') || 'added to cart'}</span>
             </div>
           </div>
         )}

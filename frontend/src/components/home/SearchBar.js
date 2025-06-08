@@ -1,12 +1,12 @@
 import React from 'react';
 
-function SearchBar({ searchTerm, onSearch }) {
+function SearchBar({ searchTerm, onSearch, placeholder = "Search stalls or menu items..." }) {
   return (
     <div className="p-4">
       <div className="relative">
         <input
           type="text"
-          placeholder="Search stalls or menu items..."
+          placeholder={placeholder}
           value={searchTerm}
           onChange={(e) => onSearch(e.target.value)}
           className="input-field pl-10"

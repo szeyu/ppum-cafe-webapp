@@ -199,7 +199,70 @@ export function CreateUserModal({
 
 // Stall Edit Modal
 export function StallEditModal({ stall, onSave, onCancel }) {
-  const [formData, setFormData] = useState(stall);
+  const [formData, setFormData] = useState(() => {
+    if (stall && stall.id) {
+      // If editing existing stall, use the real data
+      return {
+        id: stall.id,
+        name: stall.name || '',
+        name_bm: stall.name_bm || '',
+        cuisine_type: stall.cuisine_type || '',
+        cuisine_type_bm: stall.cuisine_type_bm || '',
+        description: stall.description || '',
+        description_bm: stall.description_bm || '',
+        rating: stall.rating || 0,
+        image_url: stall.image_url || '',
+        is_active: stall.is_active !== undefined ? stall.is_active : true
+      };
+    } else {
+      // If adding new stall, use default values
+      return {
+        id: null,
+        name: '',
+        name_bm: '',
+        cuisine_type: '',
+        cuisine_type_bm: '',
+        description: '',
+        description_bm: '',
+        rating: 0,
+        image_url: '',
+        is_active: true
+      };
+    }
+  });
+
+  // Update formData when stall prop changes
+  React.useEffect(() => {
+    if (stall && stall.id) {
+      // If editing existing stall, use the real data
+      setFormData({
+        id: stall.id,
+        name: stall.name || '',
+        name_bm: stall.name_bm || '',
+        cuisine_type: stall.cuisine_type || '',
+        cuisine_type_bm: stall.cuisine_type_bm || '',
+        description: stall.description || '',
+        description_bm: stall.description_bm || '',
+        rating: stall.rating || 0,
+        image_url: stall.image_url || '',
+        is_active: stall.is_active !== undefined ? stall.is_active : true
+      });
+    } else if (stall && !stall.id) {
+      // If adding new stall, use default values
+      setFormData({
+        id: null,
+        name: '',
+        name_bm: '',
+        cuisine_type: '',
+        cuisine_type_bm: '',
+        description: '',
+        description_bm: '',
+        rating: 0,
+        image_url: '',
+        is_active: true
+      });
+    }
+  }, [stall]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -210,66 +273,107 @@ export function StallEditModal({ stall, onSave, onCancel }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <h3 className="text-lg font-semibold mb-4">
-            {stall.id ? 'Edit Stall' : 'Add New Stall'}
+            {formData.id ? 'Edit Stall' : 'Add New Stall'}
           </h3>
           
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="w-full p-3 border rounded-lg text-sm"
-                required
-              />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Name Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name (English)</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name (Bahasa Malaysia)</label>
+                <input
+                  type="text"
+                  value={formData.name_bm}
+                  onChange={(e) => setFormData({...formData, name_bm: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  placeholder="Nama dalam Bahasa Malaysia"
+                />
+              </div>
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Cuisine Type</label>
-              <input
-                type="text"
-                value={formData.cuisine_type}
-                onChange={(e) => setFormData({...formData, cuisine_type: e.target.value})}
-                className="w-full p-3 border rounded-lg text-sm"
-                required
-              />
+
+            {/* Cuisine Type Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cuisine Type (English)</label>
+                <input
+                  type="text"
+                  value={formData.cuisine_type}
+                  onChange={(e) => setFormData({...formData, cuisine_type: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cuisine Type (Bahasa Malaysia)</label>
+                <input
+                  type="text"
+                  value={formData.cuisine_type_bm}
+                  onChange={(e) => setFormData({...formData, cuisine_type_bm: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  placeholder="Jenis Masakan dalam Bahasa Malaysia"
+                />
+              </div>
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="w-full p-3 border rounded-lg text-sm"
-                rows="3"
-              />
+
+            {/* Description Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description (English)</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  rows="3"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description (Bahasa Malaysia)</label>
+                <textarea
+                  value={formData.description_bm}
+                  onChange={(e) => setFormData({...formData, description_bm: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  rows="3"
+                  placeholder="Penerangan dalam Bahasa Malaysia"
+                />
+              </div>
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
-              <input
-                type="number"
-                step="0.1"
-                min="0"
-                max="5"
-                value={formData.rating}
-                onChange={(e) => setFormData({...formData, rating: parseFloat(e.target.value)})}
-                className="w-full p-3 border rounded-lg text-sm"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-              <input
-                type="text"
-                value={formData.image_url}
-                onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                className="w-full p-3 border rounded-lg text-sm"
-              />
+
+            {/* Other Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  min="0"
+                  max="5"
+                  value={formData.rating}
+                  onChange={(e) => setFormData({...formData, rating: parseFloat(e.target.value)})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                <input
+                  type="text"
+                  value={formData.image_url}
+                  onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                />
+              </div>
             </div>
             
             <div className="flex items-center">
@@ -306,7 +410,98 @@ export function StallEditModal({ stall, onSave, onCancel }) {
 
 // Menu Item Edit Modal
 export function MenuItemEditModal({ item, stalls, onSave, onCancel }) {
-  const [formData, setFormData] = useState(item);
+  const [formData, setFormData] = useState(() => {
+    if (item && item.id) {
+      // If editing existing item, use the real data
+      return {
+        id: item.id,
+        stall_id: item.stall_id || (stalls.length > 0 ? stalls[0].id : ''),
+        name: item.name || '',
+        name_bm: item.name_bm || '',
+        description: item.description || '',
+        description_bm: item.description_bm || '',
+        price: item.price || 0,
+        category: item.category || 'Meals',
+        category_bm: item.category_bm || '',
+        calories: item.calories || 0,
+        protein: item.protein || 0,
+        carbs: item.carbs || 0,
+        fat: item.fat || 0,
+        image_url: item.image_url || '',
+        is_available: item.is_available !== undefined ? item.is_available : true,
+        allergens: item.allergens || '',
+        allergens_bm: item.allergens_bm || ''
+      };
+    } else {
+      // If adding new item, use default values
+      return {
+        id: null,
+        stall_id: stalls.length > 0 ? stalls[0].id : '',
+        name: '',
+        name_bm: '',
+        description: '',
+        description_bm: '',
+        price: 0,
+        category: 'Meals',
+        category_bm: '',
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+        image_url: '',
+        is_available: true,
+        allergens: '',
+        allergens_bm: ''
+      };
+    }
+  });
+
+  // Update formData when item prop changes
+  React.useEffect(() => {
+    if (item && item.id) {
+      // If editing existing item, use the real data
+      setFormData({
+        id: item.id,
+        stall_id: item.stall_id || (stalls.length > 0 ? stalls[0].id : ''),
+        name: item.name || '',
+        name_bm: item.name_bm || '',
+        description: item.description || '',
+        description_bm: item.description_bm || '',
+        price: item.price || 0,
+        category: item.category || 'Meals',
+        category_bm: item.category_bm || '',
+        calories: item.calories || 0,
+        protein: item.protein || 0,
+        carbs: item.carbs || 0,
+        fat: item.fat || 0,
+        image_url: item.image_url || '',
+        is_available: item.is_available !== undefined ? item.is_available : true,
+        allergens: item.allergens || '',
+        allergens_bm: item.allergens_bm || ''
+      });
+    } else if (item && !item.id) {
+      // If adding new item, use default values
+      setFormData({
+        id: null,
+        stall_id: stalls.length > 0 ? stalls[0].id : '',
+        name: '',
+        name_bm: '',
+        description: '',
+        description_bm: '',
+        price: 0,
+        category: 'Meals',
+        category_bm: '',
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+        image_url: '',
+        is_available: true,
+        allergens: '',
+        allergens_bm: ''
+      });
+    }
+  }, [item, stalls]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -317,16 +512,32 @@ export function MenuItemEditModal({ item, stalls, onSave, onCancel }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <h3 className="text-lg font-semibold mb-4">
-            {item.id ? 'Edit Menu Item' : 'Add New Menu Item'}
+            {formData.id ? 'Edit Menu Item' : 'Add New Menu Item'}
           </h3>
           
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Stall selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Stall</label>
+              <select
+                value={formData.stall_id}
+                onChange={(e) => setFormData({...formData, stall_id: parseInt(e.target.value)})}
+                className="w-full p-3 border rounded-lg text-sm"
+                required
+              >
+                {stalls.map(stall => (
+                  <option key={stall.id} value={stall.id}>{stall.name}</option>
+                ))}
+              </select>
+            </div>
+            
+            {/* Name Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name (English)</label>
                 <input
                   type="text"
                   value={formData.name}
@@ -335,48 +546,22 @@ export function MenuItemEditModal({ item, stalls, onSave, onCancel }) {
                   required
                 />
               </div>
-              
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Stall</label>
-                <select
-                  value={formData.stall_id}
-                  onChange={(e) => setFormData({...formData, stall_id: parseInt(e.target.value)})}
-                  className="w-full p-3 border rounded-lg text-sm"
-                  required
-                >
-                  {stalls.map(stall => (
-                    <option key={stall.id} value={stall.id}>{stall.name}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-              <textarea
-                value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="w-full p-3 border rounded-lg text-sm"
-                rows="3"
-              />
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Price (RM)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name (Bahasa Malaysia)</label>
                 <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={formData.price}
-                  onChange={(e) => setFormData({...formData, price: parseFloat(e.target.value)})}
+                  type="text"
+                  value={formData.name_bm}
+                  onChange={(e) => setFormData({...formData, name_bm: e.target.value})}
                   className="w-full p-3 border rounded-lg text-sm"
-                  required
+                  placeholder="Nama dalam Bahasa Malaysia"
                 />
               </div>
-              
+            </div>
+
+            {/* Category Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category (English)</label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
@@ -389,9 +574,92 @@ export function MenuItemEditModal({ item, stalls, onSave, onCancel }) {
                   <option value="Desserts">Desserts</option>
                 </select>
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Category (Bahasa Malaysia)</label>
+                <input
+                  type="text"
+                  value={formData.category_bm}
+                  onChange={(e) => setFormData({...formData, category_bm: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  placeholder="Kategori dalam Bahasa Malaysia"
+                />
+              </div>
+            </div>
+
+            {/* Description Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description (English)</label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  rows="3"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description (Bahasa Malaysia)</label>
+                <textarea
+                  value={formData.description_bm}
+                  onChange={(e) => setFormData({...formData, description_bm: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  rows="3"
+                  placeholder="Penerangan dalam Bahasa Malaysia"
+                />
+              </div>
+            </div>
+
+            {/* Allergens Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Allergens (English)</label>
+                <input
+                  type="text"
+                  value={formData.allergens}
+                  onChange={(e) => setFormData({...formData, allergens: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  placeholder="e.g. Nuts, Dairy, Gluten"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Allergens (Bahasa Malaysia)</label>
+                <input
+                  type="text"
+                  value={formData.allergens_bm}
+                  onChange={(e) => setFormData({...formData, allergens_bm: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  placeholder="Alahan dalam Bahasa Malaysia"
+                />
+              </div>
             </div>
             
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {/* Price and Image URL */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Price (RM)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={formData.price}
+                  onChange={(e) => setFormData({...formData, price: parseFloat(e.target.value)})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                <input
+                  type="text"
+                  value={formData.image_url}
+                  onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                  className="w-full p-3 border rounded-lg text-sm"
+                />
+              </div>
+            </div>
+            
+            {/* Nutrition Information */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Calories</label>
                 <input
@@ -402,7 +670,6 @@ export function MenuItemEditModal({ item, stalls, onSave, onCancel }) {
                   className="w-full p-3 border rounded-lg text-sm"
                 />
               </div>
-              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Protein (g)</label>
                 <input
@@ -414,7 +681,6 @@ export function MenuItemEditModal({ item, stalls, onSave, onCancel }) {
                   className="w-full p-3 border rounded-lg text-sm"
                 />
               </div>
-              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Carbs (g)</label>
                 <input
@@ -426,7 +692,6 @@ export function MenuItemEditModal({ item, stalls, onSave, onCancel }) {
                   className="w-full p-3 border rounded-lg text-sm"
                 />
               </div>
-              
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Fat (g)</label>
                 <input
@@ -440,47 +705,14 @@ export function MenuItemEditModal({ item, stalls, onSave, onCancel }) {
               </div>
             </div>
             
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Allergens (comma-separated)</label>
+            <div className="flex items-center">
               <input
-                type="text"
-                value={formData.allergens ? formData.allergens.join(', ') : ''}
-                onChange={(e) => setFormData({...formData, allergens: e.target.value.split(',').map(a => a.trim()).filter(a => a)})}
-                className="w-full p-3 border rounded-lg text-sm"
-                placeholder="e.g., nuts, dairy, gluten"
+                type="checkbox"
+                checked={formData.is_available}
+                onChange={(e) => setFormData({...formData, is_available: e.target.checked})}
+                className="mr-2"
               />
-            </div>
-            
-            <div className="flex flex-wrap items-center gap-4">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.is_best_seller}
-                  onChange={(e) => setFormData({...formData, is_best_seller: e.target.checked})}
-                  className="mr-2"
-                />
-                <span className="text-sm font-medium text-gray-700">Best Seller</span>
-              </label>
-              
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.is_available}
-                  onChange={(e) => setFormData({...formData, is_available: e.target.checked})}
-                  className="mr-2"
-                />
-                <span className="text-sm font-medium text-gray-700">Available</span>
-              </label>
-              
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={formData.is_hospital_friendly}
-                  onChange={(e) => setFormData({...formData, is_hospital_friendly: e.target.checked})}
-                  className="mr-2"
-                />
-                <span className="text-sm font-medium text-gray-700">Hospital Friendly</span>
-              </label>
+              <label className="text-sm font-medium text-gray-700">Available</label>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-3 pt-4">

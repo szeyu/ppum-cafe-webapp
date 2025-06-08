@@ -2,60 +2,79 @@ const API_BASE_URL = 'http://localhost:8000/api';
 
 class ApiService {
   constructor() {
-    this.token = localStorage.getItem('access_token');
+    this.baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+    this.token = localStorage.getItem('token');
   }
 
   setToken(token) {
-    this.token = token;
     if (token) {
-      localStorage.setItem('access_token', token);
+      localStorage.setItem('token', token);
+      this.token = token;
     } else {
-      localStorage.removeItem('access_token');
+      localStorage.removeItem('token');
+      this.token = null;
     }
   }
 
   getAuthHeaders() {
+    const { language } = JSON.parse(localStorage.getItem('appState') || '{"language":"English"}');
+    
     const headers = {
       'Content-Type': 'application/json',
+      ...(this.token && { 'Authorization': `Bearer ${this.token}` }),
+      'language': language || 'English'
     };
-    
-    if (this.token) {
-      headers['Authorization'] = `Bearer ${this.token}`;
-    }
     
     return headers;
   }
 
   async request(endpoint, options = {}) {
-    const url = `${API_BASE_URL}${endpoint}`;
-    const config = {
-      headers: {
-        ...this.getAuthHeaders(),
-        ...options.headers,
-      },
-      ...options,
+    const { language } = JSON.parse(localStorage.getItem('appState') || '{"language":"English"}');
+    
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(this.token && { 'Authorization': `Bearer ${this.token}` }),
+      'language': language || 'English'
     };
 
-    if (config.body && typeof config.body === 'object') {
-      config.body = JSON.stringify(config.body);
+    // Prepare the request body if it exists
+    if (options.body && typeof options.body === 'object') {
+      options.body = JSON.stringify(options.body);
     }
 
     try {
-      const response = await fetch(url, config);
-      
+      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        ...options,
+        headers: {
+          ...headers,
+          ...(options.headers || {})
+        },
+      });
+
+      // Handle unauthorized responses
       if (response.status === 401) {
-        // Token expired or invalid - throw error but don't immediately clear token
-        // Let the AppContext handle the authentication refresh
-        throw new Error('Authentication required');
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        return null;
       }
-      
+
+      // For non-JSON responses
+      if (response.headers.get('content-type')?.indexOf('application/json') === -1) {
+        return { 
+          success: response.ok,
+          status: response.status
+        };
+      }
+
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(data.detail || 'An error occurred');
       }
-      
-      return await response.json();
+
+      return data;
     } catch (error) {
-      console.error('API request failed:', error);
+      console.error('API request error:', error);
       throw error;
     }
   }
@@ -116,6 +135,10 @@ class ApiService {
   // Stall endpoints
   async getStalls() {
     return this.request('/stalls/');
+  }
+
+  async getStallsAdmin() {
+    return this.request('/stalls/admin/all');
   }
 
   async getStall(stallId) {

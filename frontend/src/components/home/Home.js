@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
+import { useTranslation } from '../../hooks/useTranslation';
 import { BottomNav } from '../shared';
 
 // Import home components
@@ -12,6 +13,7 @@ import StallsGrid from './StallsGrid';
 function Home() {
   const navigate = useNavigate();
   const { state, searchStalls } = useApp();
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSearch = async (value) => {
@@ -28,11 +30,11 @@ function Home() {
   };
 
   if (state.loading) {
-    return <LoadingState />;
+    return <LoadingState message={t('common.loading')} />;
   }
 
   if (state.error) {
-    return <ErrorState error={state.error} onRetry={handleRetry} />;
+    return <ErrorState error={t('common.error')} onRetry={handleRetry} retryText={t('common.tryAgain')} />;
   }
 
   return (
@@ -43,10 +45,19 @@ function Home() {
       </div>
 
       {/* Search Bar */}
-      <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+      <SearchBar 
+        searchTerm={searchTerm} 
+        onSearch={handleSearch} 
+        placeholder={t('home.searchPlaceholder')}
+      />
 
       {/* Stalls Grid */}
-      <StallsGrid stalls={state.stalls} onStallClick={handleStallClick} />
+      <StallsGrid 
+        stalls={state.stalls} 
+        onStallClick={handleStallClick} 
+        popularTitle={t('home.popularStalls')}
+        allStallsTitle={t('home.allStalls')}
+      />
 
       <BottomNav />
     </div>

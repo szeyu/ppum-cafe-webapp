@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
+import { useTranslation } from '../../hooks/useTranslation';
 import { PageHeader } from '../shared';
 
 // Import cart components
@@ -10,6 +11,7 @@ import CartSummary from './CartSummary';
 
 function Cart() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const {
     isEmpty,
     groupedCart,
@@ -29,7 +31,7 @@ function Cart() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <PageHeader title="My Cart" />
+      <PageHeader title={t('cart.myCart') || 'My Cart'} />
 
       <div className="p-4 space-y-6">
         {/* Cart Items by Stall */}

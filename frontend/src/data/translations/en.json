@@ -1,0 +1,143 @@
+{
+  "common": {
+    "continue": "CONTINUE",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "tryAgain": "Try Again",
+    "chooseLanguage": "Choose Language",
+    "english": "English",
+    "bm": "BM",
+    "bahasaMalaysia": "Bahasa Malaysia",
+    "noResults": "No results found",
+    "tryAdjustingSearch": "Try adjusting your search terms.",
+    "close": "Close"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Name",
+    "phone": "Phone",
+    "preferredLanguage": "Preferred Language"
+  },
+  "home": {
+    "welcome": "Welcome",
+    "searchPlaceholder": "Search for stalls or dishes...",
+    "popularStalls": "Popular Stalls",
+    "allStalls": "All Stalls",
+    "orderButton": "ORDER",
+    "bestSeller": "Best Seller"
+  },
+  "cart": {
+    "myCart": "My Cart",
+    "empty": "Your cart is empty",
+    "emptyMessage": "Add some delicious items to get started!",
+    "browseStalls": "Browse Stalls",
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "serviceFee": "Service Fee",
+    "total": "Total",
+    "nutritionSummary": "Nutrition Summary",
+    "proceedToPayment": "PROCEED TO PAYMENT",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "items": "item",
+    "viewCart": "View Cart",
+    "addedToCart": "added to cart"
+  },
+  "payment": {
+    "title": "Payment",
+    "emptyMessage": "Add some items to proceed with payment.",
+    "paymentMethod": "Payment Method",
+    "onlinePayment": "Online Payment",
+    "cashAtCounter": "Cash at Counter",
+    "item": "item",
+    "processing": "PROCESSING...",
+    "payNow": "PAY NOW"
+  },
+  "orders": {
+    "title": "My Orders",
+    "subtitle": "Track your food orders",
+    "orderNumber": "Order",
+    "items": "item",
+    "from": "From",
+    "more": "more",
+    "payment": "Payment",
+    "trackOrder": "Track Order",
+    "estimatedCompletion": "Est. completion",
+    "unknownItem": "Unknown Item",
+    "moreItems": "more items",
+    "noOrders": {
+      "title": "No Orders Yet",
+      "message": "Start ordering from your favorite stalls!",
+      "browseButton": "Browse Stalls"
+    },
+    "status": {
+      "accepted": "Accepted",
+      "preparing": "Preparing",
+      "partiallyReady": "Partially Ready",
+      "readyForPickup": "Ready for Pickup",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "messages": {
+      "partiallyReady": "Some items are ready for pickup!",
+      "completed": "Order ready for pickup!"
+    }
+  },
+  "tracking": {
+    "loading": "Loading order tracking...",
+    "error": "Error loading order tracking",
+    "placedAt": "Placed at",
+    "orderStatus": "Order Status",
+    "itemsReady": "item",
+    "readyForPickup": "ready for pickup!",
+    "itemsBeingPrepared": "item",
+    "beingPrepared": "being prepared",
+    "itemsInQueue": "item",
+    "inQueue": "in queue",
+    "item": "Item",
+    "readyAt": "Ready at",
+    "estReady": "Est. ready",
+    "minPrep": "min prep",
+    "queuePosition": "Queue position",
+    "est": "Est.",
+    "readyNow": "Ready now",
+    "min": "min",
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "serviceFee": "Service Fee",
+    "total": "Total",
+    "status": {
+      "queued": "Queued",
+      "preparing": "Preparing",
+      "ready": "Ready",
+      "collected": "Collected"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "userInfo": {
+      "role": "Role",
+      "language": "Language"
+    },
+    "orderHistory": {
+      "title": "My Orders",
+      "noOrders": "No orders yet",
+      "orderNumber": "Order",
+      "reorder": "Reorder",
+      "viewAll": "View All Orders"
+    },
+    "preferences": {
+      "title": "Preferences",
+      "language": "Language",
+      "notifications": "Notifications"
+    },
+    "logout": {
+      "button": "Logout",
+      "confirm": "Are you sure you want to logout?"
+    }
+  }
+} 

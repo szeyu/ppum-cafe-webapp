@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../hooks/useTranslation';
 import { 
   PageHeader, 
   EmptyState,
@@ -11,6 +12,7 @@ import {
 
 function Payment() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const {
     paymentMethod,
     setPaymentMethod,
@@ -25,9 +27,9 @@ function Payment() {
     return (
       <EmptyState
         icon="🛒"
-        title="Your cart is empty"
-        message="Add some items to proceed with payment."
-        actionText="Browse Stalls"
+        title={t('cart.empty') || 'Your cart is empty'}
+        message={t('payment.emptyMessage') || 'Add some items to proceed with payment.'}
+        actionText={t('cart.browseStalls') || 'Browse Stalls'}
         onAction={() => navigate('/home')}
         fullScreen
       />
@@ -37,7 +39,7 @@ function Payment() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <PageHeader title="Payment" />
+      <PageHeader title={t('payment.title') || 'Payment'} />
 
       <div className="p-4 space-y-6">
         {/* Payment Method */}

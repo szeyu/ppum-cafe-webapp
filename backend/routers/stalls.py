@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException, status, Header
+from sqlalchemy.orm import Session, joinedload
 from typing import List, Optional
 
 from database import get_db
@@ -10,21 +10,64 @@ from models import User
 
 router = APIRouter(prefix="/api/stalls", tags=["stalls"])
 
+@router.get("/admin/all", response_model=List[StallSchema])
+async def get_all_stalls_admin(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Get all stalls for admin panel (no language transformation)"""
+    if current_user.role != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only admins can access this endpoint"
+        )
+    
+    # Return all stalls without any language transformation
+    # This ensures admin panel gets both English and BM fields separately
+    stalls = db.query(Stall).all()
+    return stalls
+
 @router.get("/", response_model=List[StallSchema])
-async def get_stalls(db: Session = Depends(get_db)):
+async def get_stalls(
+    language: Optional[str] = Header("English"),
+    db: Session = Depends(get_db)
+):
     """Get all active stalls"""
     stalls = db.query(Stall).filter(Stall.is_active == True).all()
+    
+    # Transform stalls based on language preference
+    if language == "BM":
+        for stall in stalls:
+            if stall.name_bm:
+                stall.name = stall.name_bm
+            if stall.cuisine_type_bm:
+                stall.cuisine_type = stall.cuisine_type_bm
+            if stall.description_bm:
+                stall.description = stall.description_bm
+    
     return stalls
 
 @router.get("/{stall_id}", response_model=StallSchema)
-async def get_stall(stall_id: int, db: Session = Depends(get_db)):
+async def get_stall(
+    stall_id: int, 
+    language: Optional[str] = Header("English"),
+    db: Session = Depends(get_db)
+):
     """Get a specific stall by ID"""
     stall = db.query(Stall).filter(Stall.id == stall_id).first()
+    
     if not stall:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Stall not found"
-        )
+        raise HTTPException(status_code=404, detail="Stall not found")
+    
+    # Transform stall based on language preference
+    if language == "BM":
+        if stall.name_bm:
+            stall.name = stall.name_bm
+        if stall.cuisine_type_bm:
+            stall.cuisine_type = stall.cuisine_type_bm
+        if stall.description_bm:
+            stall.description = stall.description_bm
+    
     return stall
 
 @router.post("/", response_model=StallSchema)

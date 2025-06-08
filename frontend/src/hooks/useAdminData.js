@@ -34,13 +34,13 @@ export function useAdminData(activeTab, user) {
           setStats(statsData);
           break;
         case 'stalls':
-          const stallsData = await ApiService.getStalls();
+          const stallsData = await ApiService.getStallsAdmin();
           setStalls(stallsData);
           break;
         case 'users':
           await loadUsersByRole();
-          // Also load stalls for role assignment
-          const stallsForUsers = await ApiService.getStalls();
+          // Also load stalls for role assignment (use admin endpoint here too)
+          const stallsForUsers = await ApiService.getStallsAdmin();
           setStalls(stallsForUsers);
           break;
       }

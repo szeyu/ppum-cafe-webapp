@@ -1,29 +1,21 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { BottomNav } from '../shared';
+import { AdminDashboard, AdminStalls, AdminUsers, UserTable, RoleChangeModal, CreateUserModal, StallEditModal, MenuItemEditModal } from './';
 import { useAdminData } from '../../hooks/useAdminData';
-
-// Import new components
-import AdminDashboard from './AdminDashboard';
-import AdminStalls from './AdminStalls';
-import AdminUsers from './AdminUsers';
-import { 
-  RoleChangeModal, 
-  CreateUserModal, 
-  StallEditModal, 
-  MenuItemEditModal 
-} from './AdminModals';
 
 function AdminPanel() {
   const { state } = useApp();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [activeUserTab, setActiveUserTab] = useState('users');
   
+  // Editing states
+  const [editingStall, setEditingStall] = useState(null);
+  const [editingMenuItem, setEditingMenuItem] = useState(null);
+  
   // Modal states
   const [showRoleChangeModal, setShowRoleChangeModal] = useState(false);
   const [showCreateUserModal, setShowCreateUserModal] = useState(false);
-  const [editingStall, setEditingStall] = useState(null);
-  const [editingMenuItem, setEditingMenuItem] = useState(null);
   
   // Form data states
   const [roleChangeData, setRoleChangeData] = useState({ 
@@ -92,6 +84,34 @@ function AdminPanel() {
   const handleStallSave = async (stallData) => {
     await handleUpdateStall(stallData);
     setEditingStall(null);
+  };
+
+  const handleMenuItemSave = (itemData) => {
+    // Handle menu item save logic here if needed
+    console.log("Saving menu item:", itemData);
+    setEditingMenuItem(null);
+  };
+
+  const handleAddMenuItem = () => {
+    setEditingMenuItem({
+      id: null,
+      stall_id: stalls.length > 0 ? stalls[0].id : '',
+      name: '',
+      name_bm: '',
+      description: '',
+      description_bm: '',
+      price: 0,
+      category: 'Meals',
+      category_bm: '',
+      calories: 0,
+      protein: 0,
+      carbs: 0,
+      fat: 0,
+      image_url: '',
+      is_available: true,
+      allergens: '',
+      allergens_bm: ''
+    });
   };
 
   const tabs = [
@@ -171,6 +191,7 @@ function AdminPanel() {
                 stalls={stalls}
                 onEditStall={setEditingStall}
                 onDeleteStall={handleDeleteStall}
+                onAddMenuItem={handleAddMenuItem}
               />
             )}
 
@@ -222,10 +243,7 @@ function AdminPanel() {
       <MenuItemEditModal
         item={editingMenuItem}
         stalls={stalls}
-        onSave={(itemData) => {
-          // Handle menu item save logic here if needed
-          setEditingMenuItem(null);
-        }}
+        onSave={handleMenuItemSave}
         onCancel={() => setEditingMenuItem(null)}
       />
 

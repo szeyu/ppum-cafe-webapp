@@ -1,0 +1,143 @@
+{
+  "common": {
+    "continue": "TERUSKAN",
+    "loading": "Memuatkan...",
+    "error": "Sesuatu telah berlaku",
+    "tryAgain": "Cuba Lagi",
+    "chooseLanguage": "Pilih Bahasa",
+    "english": "Inggeris",
+    "bm": "BM",
+    "bahasaMalaysia": "Bahasa Malaysia",
+    "noResults": "Tiada hasil carian",
+    "tryAdjustingSearch": "Cuba ubah kata kunci carian anda.",
+    "close": "Tutup"
+  },
+  "auth": {
+    "login": "Log Masuk",
+    "register": "Daftar",
+    "email": "Emel",
+    "password": "Kata Laluan",
+    "confirmPassword": "Sahkan Kata Laluan",
+    "name": "Nama",
+    "phone": "Telefon",
+    "preferredLanguage": "Bahasa Pilihan"
+  },
+  "home": {
+    "welcome": "Selamat Datang",
+    "searchPlaceholder": "Cari gerai atau hidangan...",
+    "popularStalls": "Gerai Popular",
+    "allStalls": "Semua Gerai",
+    "orderButton": "PESAN",
+    "bestSeller": "Paling Laris"
+  },
+  "cart": {
+    "myCart": "Troli Saya",
+    "empty": "Troli anda kosong",
+    "emptyMessage": "Tambah item sedap untuk bermula!",
+    "browseStalls": "Lihat Gerai",
+    "orderSummary": "Ringkasan Pesanan",
+    "subtotal": "Subjumlah",
+    "serviceFee": "Yuran Perkhidmatan",
+    "total": "Jumlah",
+    "nutritionSummary": "Ringkasan Nutrisi",
+    "proceedToPayment": "TERUSKAN KE PEMBAYARAN",
+    "checkout": "Bayar",
+    "remove": "Buang",
+    "items": "item",
+    "viewCart": "Lihat Troli",
+    "addedToCart": "ditambah ke troli"
+  },
+  "payment": {
+    "title": "Pembayaran",
+    "emptyMessage": "Tambah item untuk teruskan pembayaran.",
+    "paymentMethod": "Kaedah Pembayaran",
+    "onlinePayment": "Pembayaran Dalam Talian",
+    "cashAtCounter": "Tunai di Kaunter",
+    "item": "item",
+    "processing": "MEMPROSES...",
+    "payNow": "BAYAR SEKARANG"
+  },
+  "orders": {
+    "title": "Pesanan Saya",
+    "subtitle": "Jejak pesanan makanan anda",
+    "orderNumber": "Pesanan",
+    "items": "item",
+    "from": "Dari",
+    "more": "lagi",
+    "payment": "Pembayaran",
+    "trackOrder": "Jejak Pesanan",
+    "estimatedCompletion": "Anggaran siap",
+    "unknownItem": "Item Tidak Diketahui",
+    "moreItems": "item lagi",
+    "noOrders": {
+      "title": "Belum Ada Pesanan",
+      "message": "Mulakan pesanan dari gerai kegemaran anda!",
+      "browseButton": "Lihat Gerai"
+    },
+    "status": {
+      "accepted": "Diterima",
+      "preparing": "Menyediakan",
+      "partiallyReady": "Sebahagian Siap",
+      "readyForPickup": "Siap Untuk Diambil",
+      "completed": "Selesai",
+      "cancelled": "Dibatalkan"
+    },
+    "messages": {
+      "partiallyReady": "Sebahagian item siap untuk diambil!",
+      "completed": "Pesanan siap untuk diambil!"
+    }
+  },
+  "tracking": {
+    "loading": "Memuatkan jejak pesanan...",
+    "error": "Ralat memuatkan jejak pesanan",
+    "placedAt": "Dipesan pada",
+    "orderStatus": "Status Pesanan",
+    "itemsReady": "item",
+    "readyForPickup": "siap untuk diambil!",
+    "itemsBeingPrepared": "item",
+    "beingPrepared": "sedang disediakan",
+    "itemsInQueue": "item",
+    "inQueue": "dalam barisan",
+    "item": "Item",
+    "readyAt": "Siap pada",
+    "estReady": "Anggaran siap",
+    "minPrep": "min sediaan",
+    "queuePosition": "Kedudukan barisan",
+    "est": "Anggaran",
+    "readyNow": "Siap sekarang",
+    "min": "min",
+    "orderSummary": "Ringkasan Pesanan",
+    "subtotal": "Subjumlah",
+    "serviceFee": "Yuran Perkhidmatan",
+    "total": "Jumlah",
+    "status": {
+      "queued": "Dalam Barisan",
+      "preparing": "Menyediakan",
+      "ready": "Siap",
+      "collected": "Dikutip"
+    }
+  },
+  "profile": {
+    "title": "Profil Saya",
+    "userInfo": {
+      "role": "Peranan",
+      "language": "Bahasa"
+    },
+    "orderHistory": {
+      "title": "Pesanan Saya",
+      "noOrders": "Belum ada pesanan lagi",
+      "orderNumber": "Pesanan",
+      "reorder": "Pesan Semula",
+      "viewAll": "Lihat Semua Pesanan"
+    },
+    "preferences": {
+      "title": "Keutamaan",
+      "language": "Bahasa",
+      "notifications": "Notifikasi"
+    },
+    "logout": {
+      "button": "Log Keluar",
+      "confirm": "Adakah anda pasti mahu log keluar?"
+    }
+  }
+} 

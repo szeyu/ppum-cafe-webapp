@@ -59,12 +59,15 @@ class TokenData(BaseModel):
 # Stall Schemas
 class StallBase(BaseModel):
     name: str
+    name_bm: Optional[str] = None
     cuisine_type: str
+    cuisine_type_bm: Optional[str] = None
     description: Optional[str] = None
-    rating: float = 0.0
+    description_bm: Optional[str] = None
     image_url: Optional[str] = None
+    average_prep_time: Optional[int] = 10
+    rating: float = 0.0
     is_active: bool = True
-    average_prep_time: int = 10
 
 class StallCreate(StallBase):
     pass
@@ -80,20 +83,28 @@ class Stall(StallBase):
 class MenuItemBase(BaseModel):
     stall_id: int
     name: str
+    name_bm: Optional[str] = None
     description: Optional[str] = None
+    description_bm: Optional[str] = None
     price: float
     category: str
-    is_best_seller: bool = False
-    is_available: bool = True
+    category_bm: Optional[str] = None
+    is_best_seller: Optional[bool] = False
+    is_available: Optional[bool] = True
     image_url: Optional[str] = None
-    base_prep_time: int = 5
-    complexity_multiplier: float = 1.0
+    
+    # Enhanced timing
+    base_prep_time: Optional[int] = 5
+    complexity_multiplier: Optional[float] = 1.0
+    
+    # Nutrition information
     calories: Optional[int] = None
     protein: Optional[float] = None
     carbs: Optional[float] = None
     fat: Optional[float] = None
-    is_hospital_friendly: bool = False
+    is_hospital_friendly: Optional[bool] = False
     allergens: Optional[List[str]] = None
+    allergens_bm: Optional[List[str]] = None
 
 class MenuItemCreate(MenuItemBase):
     pass

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from '../../hooks/useTranslation';
 
 function PaymentButton({ 
   total, 
@@ -6,6 +7,8 @@ function PaymentButton({
   onPayment, 
   disabled = false 
 }) {
+  const { t } = useTranslation();
+
   return (
     <button
       onClick={onPayment}
@@ -15,10 +18,10 @@ function PaymentButton({
       {isProcessing ? (
         <div className="flex items-center justify-center">
           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-          PROCESSING...
+          {t('payment.processing') || 'PROCESSING...'}
         </div>
       ) : (
-        `PAY NOW - RM ${total.toFixed(2)}`
+        `${t('payment.payNow') || 'PAY NOW'} - RM ${total.toFixed(2)}`
       )}
     </button>
   );

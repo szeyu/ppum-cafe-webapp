@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useTranslation } from '../../hooks/useTranslation';
 
 function OrderTrackingDetail({ orderId, onClose }) {
   const { getOrderTracking, state } = useApp();
+  const { t } = useTranslation();
   const [tracking, setTracking] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -55,6 +57,54 @@ function OrderTrackingDetail({ orderId, onClose }) {
     }
   };
 
+  const getStatusText = (status) => {
+    const statusMap = {
+      'Queued': t('tracking.status.queued') || 'Queued',
+      'Preparing': t('tracking.status.preparing') || 'Preparing',
+      'Ready': t('tracking.status.ready') || 'Ready',
+      'Collected': t('tracking.status.collected') || 'Collected'
+    };
+    return statusMap[status] || status;
+  };
+
+  const formatMenuItemName = (menuItem) => {
+    if (!menuItem) return t('orders.unknownItem') || 'Unknown Item';
+    
+    const englishName = menuItem.name;
+    const bmName = menuItem.name_bm;
+    
+    // If both names exist and are different, show both
+    if (bmName && bmName.trim() && bmName !== englishName) {
+      return `${englishName} / ${bmName}`;
+    }
+    
+    // Otherwise just show the English name
+    return englishName;
+  };
+
+  const formatStallName = (stall) => {
+    if (!stall) return 'Unknown Stall';
+    
+    const englishName = stall.name;
+    const bmName = stall.name_bm;
+    
+    // If both names exist and are different, show both
+    if (bmName && bmName.trim() && bmName !== englishName) {
+      return `${englishName} / ${bmName}`;
+    }
+    
+    // Otherwise just show the English name
+    return englishName;
+  };
+
+  const formatPaymentMethod = (paymentMethod) => {
+    const paymentMap = {
+      'Online Payment': t('payment.onlinePayment') || 'Online Payment',
+      'Cash at Counter': t('payment.cashAtCounter') || 'Cash at Counter'
+    };
+    return paymentMap[paymentMethod] || paymentMethod;
+  };
+
   const formatTime = (dateString) => {
     return new Date(dateString).toLocaleTimeString('en-US', {
       hour: '2-digit',
@@ -67,10 +117,10 @@ function OrderTrackingDetail({ orderId, onClose }) {
     const estimated = new Date(estimatedTime);
     const diff = estimated - now;
     
-    if (diff <= 0) return 'Ready now';
+    if (diff <= 0) return t('tracking.readyNow') || 'Ready now';
     
     const minutes = Math.ceil(diff / (1000 * 60));
-    return `${minutes} min`;
+    return `${minutes} ${t('tracking.min') || 'min'}`;
   };
 
   if (loading) {
@@ -79,7 +129,7 @@ function OrderTrackingDetail({ orderId, onClose }) {
         <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p>Loading order tracking...</p>
+            <p>{t('tracking.loading') || 'Loading order tracking...'}</p>
           </div>
         </div>
       </div>
@@ -91,8 +141,8 @@ function OrderTrackingDetail({ orderId, onClose }) {
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
           <div className="text-center">
-            <p className="text-red-600">Error loading order tracking</p>
-            <button onClick={onClose} className="btn-primary mt-4">Close</button>
+            <p className="text-red-600">{t('tracking.error') || 'Error loading order tracking'}</p>
+            <button onClick={onClose} className="btn-primary mt-4">{t('common.close') || 'Close'}</button>
           </div>
         </div>
       </div>
@@ -108,9 +158,11 @@ function OrderTrackingDetail({ orderId, onClose }) {
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-2xl">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-bold">Order #{order.order_number}</h2>
+              <h2 className="text-xl font-bold">
+                {t('orders.orderNumber') || 'Order'} #{order.order_number}
+              </h2>
               <p className="text-gray-600 text-sm">
-                Placed at {formatTime(order.created_at)}
+                {t('tracking.placedAt') || 'Placed at'} {formatTime(order.created_at)}
               </p>
             </div>
             <button
@@ -127,21 +179,23 @@ function OrderTrackingDetail({ orderId, onClose }) {
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-lg">Order Status: {order.status}</h3>
+                <h3 className="font-semibold text-lg">
+                  {t('tracking.orderStatus') || 'Order Status'}: {order.status}
+                </h3>
                 <p className="text-gray-600">
                   {ready_items.length > 0 && (
                     <span className="text-green-600 font-medium">
-                      {ready_items.length} item{ready_items.length !== 1 ? 's' : ''} ready for pickup!
+                      {ready_items.length} {t('tracking.itemsReady') || 'item'}{ready_items.length !== 1 ? 's' : ''} {t('tracking.readyForPickup') || 'ready for pickup!'}
                     </span>
                   )}
                   {ready_items.length === 0 && preparing_items.length > 0 && (
                     <span className="text-blue-600">
-                      {preparing_items.length} item{preparing_items.length !== 1 ? 's' : ''} being prepared
+                      {preparing_items.length} {t('tracking.itemsBeingPrepared') || 'item'}{preparing_items.length !== 1 ? 's' : ''} {t('tracking.beingPrepared') || 'being prepared'}
                     </span>
                   )}
                   {ready_items.length === 0 && preparing_items.length === 0 && (
                     <span className="text-gray-600">
-                      {queued_items.length} item{queued_items.length !== 1 ? 's' : ''} in queue
+                      {queued_items.length} {t('tracking.itemsInQueue') || 'item'}{queued_items.length !== 1 ? 's' : ''} {t('tracking.inQueue') || 'in queue'}
                     </span>
                   )}
                 </p>
@@ -152,7 +206,7 @@ function OrderTrackingDetail({ orderId, onClose }) {
                 </div>
                 {order.estimated_completion_time && (
                   <div className="text-sm text-gray-600">
-                    Est. completion: {formatTime(order.estimated_completion_time)}
+                    {t('orders.estimatedCompletion') || 'Est. completion'}: {formatTime(order.estimated_completion_time)}
                   </div>
                 )}
               </div>
@@ -164,27 +218,27 @@ function OrderTrackingDetail({ orderId, onClose }) {
             <div className="mb-6">
               <h4 className="font-semibold text-green-600 mb-3 flex items-center">
                 <span className="text-xl mr-2">🍽️</span>
-                Ready for Pickup ({ready_items.length})
+                {t('tracking.readyForPickup') || 'Ready for Pickup'} ({ready_items.length})
               </h4>
               <div className="space-y-3">
                 {ready_items.map((tracker) => (
                   <div key={tracker.id} className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h5 className="font-medium">{tracker.menu_item.name}</h5>
+                        <h5 className="font-medium">{formatMenuItemName(tracker.menu_item)}</h5>
                         <p className="text-sm text-gray-600">
-                          Item {tracker.item_number} • {tracker.stall.name}
+                          {t('tracking.item') || 'Item'} {tracker.item_number} • {formatStallName(tracker.stall)}
                         </p>
                         {tracker.actual_ready_time && (
                           <p className="text-xs text-green-600">
-                            Ready at {formatTime(tracker.actual_ready_time)}
+                            {t('tracking.readyAt') || 'Ready at'} {formatTime(tracker.actual_ready_time)}
                           </p>
                         )}
                       </div>
                       <div className="text-right">
                         <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white ${getStatusColor(tracker.status)}`}>
                           <span className="mr-1">{getStatusIcon(tracker.status)}</span>
-                          {tracker.status}
+                          {getStatusText(tracker.status)}
                         </div>
                       </div>
                     </div>
@@ -199,28 +253,28 @@ function OrderTrackingDetail({ orderId, onClose }) {
             <div className="mb-6">
               <h4 className="font-semibold text-blue-600 mb-3 flex items-center">
                 <span className="text-xl mr-2">👨‍🍳</span>
-                Being Prepared ({preparing_items.length})
+                {t('tracking.beingPrepared') || 'Being Prepared'} ({preparing_items.length})
               </h4>
               <div className="space-y-3">
                 {preparing_items.map((tracker) => (
                   <div key={tracker.id} className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h5 className="font-medium">{tracker.menu_item.name}</h5>
+                        <h5 className="font-medium">{formatMenuItemName(tracker.menu_item)}</h5>
                         <p className="text-sm text-gray-600">
-                          Item {tracker.item_number} • {tracker.stall.name}
+                          {t('tracking.item') || 'Item'} {tracker.item_number} • {formatStallName(tracker.stall)}
                         </p>
                         <p className="text-xs text-blue-600">
-                          Est. ready: {getTimeRemaining(tracker.estimated_ready_time)}
+                          {t('tracking.estReady') || 'Est. ready'}: {getTimeRemaining(tracker.estimated_ready_time)}
                         </p>
                       </div>
                       <div className="text-right">
                         <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white ${getStatusColor(tracker.status)}`}>
                           <span className="mr-1">{getStatusIcon(tracker.status)}</span>
-                          {tracker.status}
+                          {getStatusText(tracker.status)}
                         </div>
                         <div className="text-xs text-gray-500 mt-1">
-                          {tracker.prep_duration_minutes} min prep
+                          {tracker.prep_duration_minutes} {t('tracking.minPrep') || 'min prep'}
                         </div>
                       </div>
                     </div>
@@ -249,28 +303,28 @@ function OrderTrackingDetail({ orderId, onClose }) {
             <div className="mb-6">
               <h4 className="font-semibold text-gray-600 mb-3 flex items-center">
                 <span className="text-xl mr-2">⏳</span>
-                In Queue ({queued_items.length})
+                {t('tracking.inQueue') || 'In Queue'} ({queued_items.length})
               </h4>
               <div className="space-y-3">
                 {queued_items.map((tracker) => (
                   <div key={tracker.id} className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h5 className="font-medium">{tracker.menu_item.name}</h5>
+                        <h5 className="font-medium">{formatMenuItemName(tracker.menu_item)}</h5>
                         <p className="text-sm text-gray-600">
-                          Item {tracker.item_number} • {tracker.stall.name}
+                          {t('tracking.item') || 'Item'} {tracker.item_number} • {formatStallName(tracker.stall)}
                         </p>
                         <p className="text-xs text-gray-500">
-                          Queue position: #{tracker.queue_position}
+                          {t('tracking.queuePosition') || 'Queue position'}: #{tracker.queue_position}
                         </p>
                       </div>
                       <div className="text-right">
                         <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white ${getStatusColor(tracker.status)}`}>
                           <span className="mr-1">{getStatusIcon(tracker.status)}</span>
-                          {tracker.status}
+                          {getStatusText(tracker.status)}
                         </div>
                         <div className="text-xs text-gray-500 mt-1">
-                          Est. {getTimeRemaining(tracker.estimated_ready_time)}
+                          {t('tracking.est') || 'Est.'} {getTimeRemaining(tracker.estimated_ready_time)}
                         </div>
                       </div>
                     </div>
@@ -282,22 +336,22 @@ function OrderTrackingDetail({ orderId, onClose }) {
 
           {/* Order Summary */}
           <div className="bg-gray-50 rounded-xl p-4">
-            <h4 className="font-semibold mb-3">Order Summary</h4>
+            <h4 className="font-semibold mb-3">{t('tracking.orderSummary') || 'Order Summary'}</h4>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span>Subtotal</span>
+                <span>{t('tracking.subtotal') || 'Subtotal'}</span>
                 <span>RM {order.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span>Service Fee</span>
+                <span>{t('tracking.serviceFee') || 'Service Fee'}</span>
                 <span>RM {order.service_fee.toFixed(2)}</span>
               </div>
               <div className="border-t border-gray-300 pt-2 flex justify-between font-semibold">
-                <span>Total</span>
+                <span>{t('tracking.total') || 'Total'}</span>
                 <span>RM {order.total_amount.toFixed(2)}</span>
               </div>
               <div className="text-xs text-gray-500 mt-2">
-                Payment: {order.payment_method}
+                {t('orders.payment') || 'Payment'}: {formatPaymentMethod(order.payment_method)}
               </div>
             </div>
           </div>

@@ -211,21 +211,31 @@ export function AppProvider({ children }) {
 
   const checkAuthentication = async () => {
     try {
-      const token = localStorage.getItem('access_token');
-      if (token) {
-        // Update the API service token
-        ApiService.setToken(token);
-        const user = await ApiService.getCurrentUser();
-        dispatch({ type: 'SET_USER', payload: user });
-        dispatch({ type: 'SET_AUTHENTICATED', payload: true });
-      } else {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
         dispatch({ type: 'SET_AUTHENTICATED', payload: false });
+        dispatch({ type: 'SET_USER', payload: null });
+        return;
+      }
+      
+      // Set the token in the API service
+      ApiService.setToken(token);
+      
+      // Get current user info
+      const userData = await ApiService.getCurrentUser();
+      if (userData) {
+        dispatch({ type: 'SET_USER', payload: userData });
+        dispatch({ type: 'SET_AUTHENTICATED', payload: true });
+        
+        // Set language preference from user
+        if (userData.language_preference) {
+          dispatch({ type: 'SET_LANGUAGE', payload: userData.language_preference });
+        }
       }
     } catch (error) {
-      // Token invalid or expired - don't clear cart, just set as unauthenticated
-      console.log('Authentication check failed:', error.message);
-      localStorage.removeItem('access_token');
-      ApiService.setToken(null);
+      console.error('Authentication check failed:', error);
+      localStorage.removeItem('token');
       dispatch({ type: 'SET_AUTHENTICATED', payload: false });
       dispatch({ type: 'SET_USER', payload: null });
     }
@@ -236,8 +246,7 @@ export function AppProvider({ children }) {
       dispatch({ type: 'SET_LOADING', payload: true });
       
       // Load stalls
-      const stalls = await ApiService.getStalls();
-      dispatch({ type: 'SET_STALLS', payload: stalls });
+      await loadStalls();
       
       // Load user orders
       await loadUserOrders();
@@ -275,6 +284,16 @@ export function AppProvider({ children }) {
     }
   };
 
+  const loadStalls = async () => {
+    try {
+      const stalls = await ApiService.getStalls();
+      dispatch({ type: 'SET_STALLS', payload: stalls });
+    } catch (error) {
+      console.error('Error loading stalls:', error);
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+    }
+  };
+
   const loadMenuItems = useCallback(async (stallId, category = null) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
@@ -292,8 +311,30 @@ export function AppProvider({ children }) {
     if (!state.user) return;
     
     try {
+      // Update language preference in backend
       await ApiService.updateUserLanguage(state.user.id, language);
+      
+      // Update language in state
       dispatch({ type: 'SET_LANGUAGE', payload: language });
+      
+      // Immediately update localStorage so API requests use the new language
+      const appState = JSON.parse(localStorage.getItem('appState') || '{}');
+      appState.language = language;
+      localStorage.setItem('appState', JSON.stringify(appState));
+      
+      // Reload stalls data to get the content in the new language
+      await loadStalls();
+      
+      // If there are menu items currently loaded, reload them too
+      if (state.menuItems.length > 0) {
+        // Get the current stall ID from the first menu item
+        const currentStallId = state.menuItems[0]?.stall_id;
+        if (currentStallId) {
+          const items = await ApiService.getMenuItems(currentStallId);
+          dispatch({ type: 'SET_MENU_ITEMS', payload: items });
+        }
+      }
+      
     } catch (error) {
       console.error('Error updating language:', error);
       dispatch({ type: 'SET_ERROR', payload: error.message });
@@ -393,9 +434,10 @@ export function AppProvider({ children }) {
   const logout = async () => {
     try {
       await ApiService.logout();
+      localStorage.removeItem('token');
       dispatch({ type: 'LOGOUT' });
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error('Logout failed:', error);
     }
   };
 
@@ -412,6 +454,7 @@ export function AppProvider({ children }) {
   const contextValue = {
     state,
     dispatch,
+    loadStalls,
     loadMenuItems,
     updateLanguage,
     createOrder,
